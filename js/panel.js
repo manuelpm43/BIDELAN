@@ -41,16 +41,6 @@ function ocultarFichaPK() {
 btnCerrarFichaPK.addEventListener("click", ocultarFichaPK);
 
 
-/* Cerrar al hacer clic fuera del recuadro blanco */
-overlayFichaPK.addEventListener("click", function (evento) {
-
-    if (evento.target === overlayFichaPK) {
-        ocultarFichaPK();
-    }
-
-});
-
-
 /* Cerrar con la tecla Escape */
 document.addEventListener("keydown", function (evento) {
 
