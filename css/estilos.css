@@ -205,6 +205,13 @@ body {
     background: transparent;
 }
 
+.texto-grupo-pendiente {
+    margin: 4px 2px;
+    color: #9aa3aa;
+    font-size: 12px;
+    font-style: italic;
+}
+
 /* =========================================================
    PEQUEÑOS SÍMBOLOS DE LEYENDA
    ========================================================= */
