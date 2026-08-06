@@ -87,18 +87,6 @@ body {
     font-size: 14px;
 }
 
-/* Información */
-.info {
-    margin-top: auto;
-    background: #f8fafc;
-    min-height: 210px;
-}
-
-.info p {
-    color: #555;
-    font-size: 14px;
-}
-
 /* Zona mapa */
 #main {
     flex: 1;
@@ -251,14 +239,6 @@ body {
     min-height: 0;
     overflow-y: auto;
 }
-
-#info {
-    flex: 0 0 auto;
-    min-height: 180px;
-    max-height: 260px;
-    overflow-y: auto;
-    margin-top: 0;
-}
 h2{
 
     background:#eef3f7;
@@ -304,11 +284,6 @@ h2{
     font-weight: 700;
 }
 
-/* La zona de información queda ligeramente diferenciada */
-#info {
-    background: #f8fafc;
-    border-top: 3px solid #9fb4c7;
-}
 /* =========================================================
    AUTOCOMPLETADO DEL BUSCADOR
    ========================================================= */
@@ -372,4 +347,76 @@ h2{
     padding: 10px 12px;
     color: #7a858d;
     font-size: 13px;
+}
+/* =========================================================
+   VENTANA EMERGENTE: FICHA DEL PUNTO KILOMÉTRICO
+   ========================================================= */
+
+.overlay-ficha-pk {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    z-index: 2500;
+}
+
+.overlay-ficha-pk.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.popup-ficha-pk {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+    width: 90%;
+    max-width: 380px;
+
+    cursor: grab;
+    transform: translate(-50%, calc(-50% - 20px));
+    transition: transform 0.3s ease;
+}
+
+.overlay-ficha-pk.active .popup-ficha-pk {
+    transform: translate(-50%, -50%);
+}
+
+.popup-ficha-pk.arrastrando {
+    cursor: grabbing;
+    transition: none;
+    user-select: none;
+}
+
+.btn-cerrar-ficha-pk {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    color: #9aa3aa;
+
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-cerrar-ficha-pk:hover {
+    color: #1f4e79;
 }

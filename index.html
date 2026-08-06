@@ -74,18 +74,20 @@
 
 </section>
 
-    <!-- PANEL DE INFORMACIÓN -->
-    <section id="info" class="bloque info">
-        <h2>ℹ Información</h2>
-        <p>Seleccione un punto kilométrico en el mapa.</p>
-    </section>
-
 </aside>
 
         <main id="main">
             <div id="mapa" class="m-container"></div>
         </main>
 
+    </div>
+
+    <!-- VENTANA EMERGENTE: ficha del punto kilométrico -->
+    <div class="overlay-ficha-pk" id="overlayFichaPK">
+        <div class="popup-ficha-pk">
+            <button class="btn-cerrar-ficha-pk" id="btnCerrarFichaPK" type="button" aria-label="Cerrar">&times;</button>
+            <div id="contenidoFichaPK"></div>
+        </div>
     </div>
 
     <script src="https://componentes.idee.es/api-idee/vendor/browser-polyfill.js"></script>
