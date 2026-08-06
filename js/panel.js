@@ -2,6 +2,7 @@ const overlayFichaPK = document.getElementById("overlayFichaPK");
 const btnCerrarFichaPK = document.getElementById("btnCerrarFichaPK");
 const contenidoFichaPK = document.getElementById("contenidoFichaPK");
 const popupFichaPK = document.querySelector(".popup-ficha-pk");
+const cabeceraFichaPK = document.querySelector(".cabecera-ficha-pk");
 
 
 function mostrarInfoPK(atributos) {
@@ -65,7 +66,7 @@ let arrastrandoFichaPK = false;
 let offsetArrastreX = 0;
 let offsetArrastreY = 0;
 
-popupFichaPK.addEventListener("mousedown", function (evento) {
+cabeceraFichaPK.addEventListener("mousedown", function (evento) {
 
     if (evento.target.closest(".btn-cerrar-ficha-pk")) {
         return;
