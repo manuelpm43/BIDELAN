@@ -37,7 +37,11 @@ body {
 }
 
 .logo-icono {
-    font-size: 34px;
+    height: 44px;
+    width: auto;
+    padding: 4px;
+    background: #ffffff;
+    border-radius: 5px;
 }
 
 #logo h1 {
@@ -213,6 +217,36 @@ body {
 }
 
 /* =========================================================
+   FILTRADO DE RESULTADOS (bloque → activo → atributo)
+   ========================================================= */
+
+.fila-filtro {
+    margin-bottom: 10px;
+}
+
+.fila-filtro label {
+    display: block;
+    margin-bottom: 4px;
+    color: #556472;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.fila-filtro select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 9px;
+    border: 1px solid #cfd6dd;
+    border-radius: 5px;
+    background: #f4f6f8;
+    color: #9aa3aa;
+    font-size: 13px;
+    cursor: not-allowed;
+}
+
+/* =========================================================
    PEQUEÑOS SÍMBOLOS DE LEYENDA
    ========================================================= */
 
@@ -234,17 +268,17 @@ body {
 
 #sidebar {
     height: 100vh;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .bloque-buscador {
     flex: 0 0 auto;
 }
 
-.bloque-capas {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
+.bloque-capas,
+.bloque-campanas,
+.bloque-filtrado {
+    flex: 0 0 auto;
 }
 h2{
 
