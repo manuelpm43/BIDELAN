@@ -1,16 +1,16 @@
 IDEE.config("backgroundlayers", [
     {
-        id: "cartografia",
-        title: "Carto",
-        layers: [
-            "WMTS*https://www.ign.es/wmts/ign-base?*IGNBaseTodo*GoogleMapsCompatible*Callejero*false*image/png*false*false*true"
-        ]
-    },
-    {
         id: "ortofoto",
         title: "Ortofoto",
         layers: [
             "WMTS*https://www.ign.es/wmts/pnoa-ma?*OI.OrthoimageCoverage*GoogleMapsCompatible*imagen*false*image/jpeg*false*false*true"
+        ]
+    },
+    {
+        id: "cartografia",
+        title: "Carto",
+        layers: [
+            "WMTS*https://www.ign.es/wmts/ign-base?*IGNBaseTodo*GoogleMapsCompatible*Callejero*false*image/png*false*false*true"
         ]
     },
     {
@@ -43,6 +43,52 @@ const capaPKv0 = new IDEE.layer.WMS({
     crossOrigin: null
 });
 mapa.addLayers(capaPKv0);
+
+/* Encuadre inicial: ajusta el zoom a la extensión real de bidelan:pk_v0 */
+fetch(`${geoserverWfsUrl}?service=WFS&version=2.0.0&request=GetFeature&typeNames=bidelan:pk_v0&outputFormat=application/json&srsName=EPSG:3857`)
+    .then(function (respuesta) {
+
+        if (!respuesta.ok) {
+            throw new Error(
+                `No se pudo consultar la extensión de la capa: ${respuesta.status}`
+            );
+        }
+
+        return respuesta.json();
+    })
+    .then(function (geojson) {
+
+        mapa.setBbox(
+            extensionDeFeatures(geojson.features)
+        );
+
+    })
+    .catch(function (error) {
+
+        console.error("Error al encuadrar la capa de puntos kilométricos:", error);
+
+    });
+
+
+function extensionDeFeatures(features) {
+
+    const coordenadasX = features.map(function (feature) {
+        return feature.geometry.coordinates[0];
+    });
+
+    const coordenadasY = features.map(function (feature) {
+        return feature.geometry.coordinates[1];
+    });
+
+    return [
+        Math.min(...coordenadasX),
+        Math.min(...coordenadasY),
+        Math.max(...coordenadasX),
+        Math.max(...coordenadasY)
+    ];
+
+}
+
 
 mapa.on("click", function (evento) {
 
