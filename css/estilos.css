@@ -69,12 +69,6 @@ body {
 
 }
 
-.bloque h2 {
-    margin: 0 0 12px 0;
-    color: #1f4e79;
-    font-size: 17px;
-}
-
 .bloque label {
     display: block;
     padding: 6px 0;
@@ -277,19 +271,9 @@ body {
 
 .bloque-capas,
 .bloque-campanas,
-.bloque-filtrado {
+.bloque-filtrado,
+.bloque-analisis {
     flex: 0 0 auto;
-}
-h2{
-
-    background:#eef3f7;
-
-    padding:8px 10px;
-
-    border-radius:5px;
-
-    border-left:4px solid #2b5c8a;
-
 }
 /* =========================================================
    SEPARACIÓN VISUAL ENTRE ZONAS DEL PANEL
@@ -316,11 +300,11 @@ h2{
     margin: 0 0 12px 0;
     padding: 8px 10px;
 
-    background: #eef3f7;
-    border-left: 4px solid #1f4e79;
+    background: #1f4e79;
+    border-left: 4px solid #2589bd;
     border-radius: 4px;
 
-    color: #1f4e79;
+    color: #ffffff;
     font-size: 16px;
     font-weight: 700;
 }
