@@ -98,6 +98,8 @@ v1.2 Checkbox de visibilidad
 
 v1.3 Panel de información vía WFS al hacer click
 
+v1.8 Página de login/registro (POST /auth/login, /auth/register) con guardado de token y redirección al visor, con modo mock temporal en localStorage mientras no exista backend
+
 ---
 
 # Estado del proyecto
