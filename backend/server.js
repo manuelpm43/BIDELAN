@@ -7,7 +7,13 @@ const rutasAdmin = require('./admin');
 
 const app = express();
 
-app.use(cors({ origin: process.env.ORIGEN_PERMITIDO || '*' }));
+// ORIGEN_PERMITIDO admite varios orígenes separados por comas
+// (por ejemplo: http://localhost:5500,http://127.0.0.1:5500)
+const origenesPermitidos = (process.env.ORIGEN_PERMITIDO || '*')
+    .split(',')
+    .map(function (origen) { return origen.trim(); });
+
+app.use(cors({ origin: origenesPermitidos.includes('*') ? '*' : origenesPermitidos }));
 app.use(express.json());
 
 app.get('/health', function (req, res) {

@@ -53,6 +53,10 @@ body {
     opacity: 0.9;
 }
 
+.oculto {
+    display: none;
+}
+
 /* Aviso de modo prueba (mock, sin backend real) */
 .aviso-mock-auth {
     margin: 12px 0 0 0;
