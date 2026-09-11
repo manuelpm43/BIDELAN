@@ -1,11 +1,8 @@
-// Base de la API de autenticación. Vacío = mismo origen que sirve esta página.
-const apiAuthUrl = '';
-
-const claveTokenAuth = 'bidelanToken';
+// apiAuthUrl y claveTokenAuth se definen en js/config.js
 
 // Modo de prueba: simula /auth/login y /auth/register en localStorage mientras no exista backend real.
-// Poner a false en cuanto la API de autenticación esté disponible.
-const modoMockAuth = true;
+// Backend real ya desplegado en apiAuthUrl, así que queda desactivado.
+const modoMockAuth = false;
 const claveUsuariosMock = 'bidelanUsuariosMock';
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -122,13 +119,12 @@ function registrarUsuario() {
 
     peticionAuth('/auth/register', { nombre: nombre, email: email, password: password })
         .then(function (datos) {
-            if (datos.token) {
-                guardarTokenYRedirigirAlVisor(datos.token);
-                return;
-            }
-            mostrarMensajeAuth('mensajeRegistro', 'Cuenta creada correctamente. Ya puedes iniciar sesión.', 'exito');
+            mostrarMensajeAuth(
+                'mensajeRegistro',
+                datos.mensaje || 'Registro recibido, pendiente de aprobación.',
+                'exito'
+            );
             document.getElementById('formularioRegistro').reset();
-            cambiarPestanaAuth('login');
         })
         .catch(function (error) {
             mostrarMensajeAuth('mensajeRegistro', error.message, 'error');

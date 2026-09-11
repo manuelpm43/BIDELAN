@@ -1,0 +1,89 @@
+#contenedorAdmin {
+    width: 100%;
+    max-width: 720px;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.tarjeta-admin {
+    padding: 22px 24px 24px;
+}
+
+.cabecera-admin {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.cabecera-admin h2 {
+    margin: 0;
+    color: #1f4e79;
+    font-size: 18px;
+}
+
+.btn-recargar {
+    width: auto;
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+.tabla-pendientes {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.tabla-pendientes th,
+.tabla-pendientes td {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid #e4e9ed;
+}
+
+.tabla-pendientes th {
+    color: #556472;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.celda-acciones {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-accion-admin {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-aprobar {
+    background: #1a7f37;
+    color: #ffffff;
+}
+
+.btn-aprobar:hover {
+    background: #146129;
+}
+
+.btn-rechazar {
+    background: #b3261e;
+    color: #ffffff;
+}
+
+.btn-rechazar:hover {
+    background: #8c1e18;
+}
+
+.texto-sin-pendientes {
+    color: #7a858d;
+    font-size: 14px;
+    text-align: center;
+    padding: 20px 0;
+}

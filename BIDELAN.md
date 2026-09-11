@@ -100,6 +100,10 @@ v1.3 Panel de información vía WFS al hacer click
 
 v1.8 Página de login/registro (POST /auth/login, /auth/register) con guardado de token y redirección al visor, con modo mock temporal en localStorage mientras no exista backend
 
+v1.9 Backend real de autenticación (Node/Express + PostgreSQL + JWT) desplegado junto a GeoServer, sustituyendo el mock
+
+v2.0 Flujo de aprobación de altas: los registros nuevos quedan pendientes hasta que un administrador los aprueba desde admin.html
+
 ---
 
 # Estado del proyecto
