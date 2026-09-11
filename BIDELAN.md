@@ -104,6 +104,8 @@ v1.9 Backend real de autenticación (Node/Express + PostgreSQL + JWT) desplegado
 
 v2.0 Flujo de aprobación de altas: los registros nuevos quedan pendientes hasta que un administrador los aprueba desde admin.html
 
+v2.1 CORS multi-origen (localhost y 127.0.0.1) y arreglo del aviso de modo mock en login.html
+
 ---
 
 # Estado del proyecto
