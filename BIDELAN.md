@@ -106,6 +106,8 @@ v2.0 Flujo de aprobación de altas: los registros nuevos quedan pendientes hasta
 
 v2.1 CORS multi-origen (localhost y 127.0.0.1) y arreglo del aviso de modo mock en login.html
 
+v2.2 Backend: emails normalizados, límite de intentos en /auth, bootstrap automático de la cuenta admin inicial y SSL opcional para PostgreSQL
+
 ---
 
 # Estado del proyecto

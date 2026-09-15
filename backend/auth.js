@@ -1,20 +1,42 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const pool = require('./db');
 
 const router = express.Router();
 
 const RONDAS_SAL = 10;
+const PATRON_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const limitadorAuth = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { mensaje: 'Demasiados intentos. Inténtalo de nuevo más tarde.' }
+});
+
+router.use(limitadorAuth);
 
 router.post('/register', manejarRegistro);
 router.post('/login', manejarLogin);
 
+function normalizarEmail(email) {
+    return (email || '').trim().toLowerCase();
+}
+
 async function manejarRegistro(req, res) {
-    const { nombre, email, password } = req.body;
+    const nombre = (req.body.nombre || '').trim();
+    const email = normalizarEmail(req.body.email);
+    const { password } = req.body;
 
     if (!nombre || !email || !password) {
         return res.status(400).json({ mensaje: 'Rellena todos los campos.' });
+    }
+
+    if (!PATRON_EMAIL.test(email)) {
+        return res.status(400).json({ mensaje: 'Introduce un correo electrónico válido.' });
     }
 
     if (password.length < 6) {
@@ -46,7 +68,8 @@ async function manejarRegistro(req, res) {
 }
 
 async function manejarLogin(req, res) {
-    const { email, password } = req.body;
+    const email = normalizarEmail(req.body.email);
+    const { password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ mensaje: 'Introduce correo electrónico y contraseña.' });

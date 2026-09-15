@@ -4,8 +4,13 @@ const express = require('express');
 const cors = require('cors');
 const rutasAuth = require('./auth');
 const rutasAdmin = require('./admin');
+const asegurarAdminInicial = require('./bootstrapAdmin');
 
 const app = express();
+
+// Necesario para que express-rate-limit vea la IP real del cliente
+// cuando el backend está detrás de un proxy inverso (nginx, etc.)
+app.set('trust proxy', 1);
 
 // ORIGEN_PERMITIDO admite varios orígenes separados por comas
 // (por ejemplo: http://localhost:5500,http://127.0.0.1:5500)
@@ -25,6 +30,12 @@ app.use('/admin', rutasAdmin);
 
 const puerto = process.env.PORT || 4000;
 
-app.listen(puerto, function () {
-    console.log(`Backend de autenticación escuchando en el puerto ${puerto}`);
-});
+asegurarAdminInicial()
+    .catch(function (error) {
+        console.error('No se ha podido preparar la cuenta admin inicial:', error);
+    })
+    .then(function () {
+        app.listen(puerto, function () {
+            console.log(`Backend de autenticación escuchando en el puerto ${puerto}`);
+        });
+    });
