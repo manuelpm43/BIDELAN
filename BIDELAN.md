@@ -108,6 +108,8 @@ v2.1 CORS multi-origen (localhost y 127.0.0.1) y arreglo del aviso de modo mock 
 
 v2.2 Backend: emails normalizados, límite de intentos en /auth, bootstrap automático de la cuenta admin inicial y SSL opcional para PostgreSQL
 
+v2.3 Despliegue en https://geospatiallab.xyz: GeoServer y backend de auth detrás de nginx con HTTPS, visor y backend en el mismo origen
+
 ---
 
 # Estado del proyecto

@@ -31,11 +31,11 @@ const mapa = IDEE.map({
 });
 console.log(mapa);
 
-// Servicio GeoServer del proyecto BIDELAN
-const geoserverWfsUrl = "http://217.71.202.62:8080/geoserver/bidelan/ows";
+// Servicio GeoServer del proyecto BIDELAN (vía proxy nginx con HTTPS)
+const geoserverWfsUrl = "https://geospatiallab.xyz/geoserver/bidelan/ows";
 
 const capaPKv0 = new IDEE.layer.WMS({
-    url: "http://217.71.202.62:8080/geoserver/bidelan/wms",
+    url: "https://geospatiallab.xyz/geoserver/bidelan/wms",
     name: "bidelan:pk_v0",
     legend: "Puntos kilométricos",
     useCapabilities: false
