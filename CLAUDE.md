@@ -30,7 +30,7 @@ Key shared globals (declared with `const`/`let` at top level, relied on across f
 ### Data source
 
 All feature data currently comes from one GeoServer instance and one layer:
-- WMS/WFS base URL: `https://geospatiallab.xyz/geoserver/bidelan/ows` (WFS) and `.../geoserver/bidelan/wms` (WMS) — nginx en el servidor (217.71.202.62) hace de proxy inverso HTTPS hacia GeoServer, que escucha internamente en el puerto 8080
+- WMS/WFS base URL: `https://visor.geospatiallab.xyz/geoserver/bidelan/ows` (WFS) and `.../geoserver/bidelan/wms` (WMS) — nginx en el servidor (217.71.202.62) hace de proxy inverso HTTPS hacia GeoServer, que escucha internamente en el puerto 8080. El visor completo (mapa, login/registro, panel admin) vive en el subdominio `visor.geospatiallab.xyz`; la raíz `geospatiallab.xyz` es una página aparte, no forma parte de este proyecto.
 - Layer: `bidelan:pk_v0` — point geometries with attributes `CARRETERA`, `PK`, `SENTIDO`, `IDCTRAMO`
 - WFS requests use `outputFormat=application/json` and `srsName=EPSG:3857` (matching the map projection) throughout
 

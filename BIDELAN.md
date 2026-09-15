@@ -110,6 +110,8 @@ v2.2 Backend: emails normalizados, límite de intentos en /auth, bootstrap autom
 
 v2.3 Despliegue en https://geospatiallab.xyz: GeoServer y backend de auth detrás de nginx con HTTPS, visor y backend en el mismo origen
 
+v2.4 El visor se traslada a su propio subdominio https://visor.geospatiallab.xyz (la raíz del dominio queda libre para otros usos)
+
 ---
 
 # Estado del proyecto

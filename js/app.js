@@ -32,10 +32,10 @@ const mapa = IDEE.map({
 console.log(mapa);
 
 // Servicio GeoServer del proyecto BIDELAN (vía proxy nginx con HTTPS)
-const geoserverWfsUrl = "https://geospatiallab.xyz/geoserver/bidelan/ows";
+const geoserverWfsUrl = "https://visor.geospatiallab.xyz/geoserver/bidelan/ows";
 
 const capaPKv0 = new IDEE.layer.WMS({
-    url: "https://geospatiallab.xyz/geoserver/bidelan/wms",
+    url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
     name: "bidelan:pk_v0",
     legend: "Puntos kilométricos",
     useCapabilities: false
