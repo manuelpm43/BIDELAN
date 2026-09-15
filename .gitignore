@@ -4,3 +4,7 @@ Thumbs.db
 
 backend/node_modules/
 backend/.env
+
+tools/importar-agol/node_modules/
+tools/importar-agol/.env
+tools/importar-agol/tmp/

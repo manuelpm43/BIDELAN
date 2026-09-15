@@ -112,6 +112,8 @@ v2.3 Despliegue en https://geospatiallab.xyz: GeoServer y backend de auth detrá
 
 v2.4 El visor se traslada a su propio subdominio https://visor.geospatiallab.xyz (la raíz del dominio queda libre para otros usos)
 
+v2.5 Herramienta `tools/importar-agol` para migrar capas de ArcGIS Online (bidegi.maps.arcgis.com) a PostgreSQL/PostGIS, adjuntos incluidos
+
 ---
 
 # Estado del proyecto
