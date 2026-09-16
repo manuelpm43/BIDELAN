@@ -44,6 +44,16 @@ const capaPKv0 = new IDEE.layer.WMS({
 });
 mapa.addLayers(capaPKv0);
 
+const capaPartesAccidentes = new IDEE.layer.WMS({
+    url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
+    name: "bidelan:partes_accidentes",
+    legend: "Partes de accidentes",
+    useCapabilities: false
+}, {
+    crossOrigin: null
+});
+mapa.addLayers(capaPartesAccidentes);
+
 /* Encuadre inicial: ajusta el zoom a la extensión real de bidelan:pk_v0 */
 fetch(`${geoserverWfsUrl}?service=WFS&version=2.0.0&request=GetFeature&typeNames=bidelan:pk_v0&outputFormat=application/json&srsName=EPSG:3857`)
     .then(function (respuesta) {

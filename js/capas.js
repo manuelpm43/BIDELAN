@@ -1,4 +1,5 @@
 const checkPKv0 = document.getElementById("checkPKv0");
+const checkPartesAccidentes = document.getElementById("checkPartesAccidentes");
 
 
 /**
@@ -28,6 +29,17 @@ checkPKv0.addEventListener("change", function () {
     cambiarVisibilidadCapa(
         capaPKv0,
         checkPKv0.checked
+    );
+
+});
+
+
+// Partes de accidentes
+checkPartesAccidentes.addEventListener("change", function () {
+
+    cambiarVisibilidadCapa(
+        capaPartesAccidentes,
+        checkPartesAccidentes.checked
     );
 
 });

@@ -114,6 +114,8 @@ v2.4 El visor se traslada a su propio subdominio https://visor.geospatiallab.xyz
 
 v2.5 Herramienta `tools/importar-agol` para migrar capas de ArcGIS Online (bidegi.maps.arcgis.com) a PostgreSQL/PostGIS, adjuntos incluidos
 
+v2.6 Publica `partes_accidentes` en GeoServer (workspace bidelan) y la añade al visor como capa WMS con su checkbox de visibilidad, primera capa migrada desde ArcGIS Online
+
 ---
 
 # Estado del proyecto
