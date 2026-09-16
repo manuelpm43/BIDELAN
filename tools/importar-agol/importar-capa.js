@@ -51,7 +51,7 @@ async function main() {
     const schema = cfg.PGSCHEMA || 'bidelan';
 
     console.log('Autenticando en ArcGIS Online...');
-    const token = await agol.generarToken(cfg);
+    const token = await agol.obtenerToken(cfg);
 
     let item;
     if (args.itemId) {

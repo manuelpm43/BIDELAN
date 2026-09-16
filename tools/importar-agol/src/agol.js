@@ -22,6 +22,13 @@ async function generarToken(cfg) {
     return datos.token;
 }
 
+async function obtenerToken(cfg) {
+    if (cfg.AGOL_API_KEY) {
+        return cfg.AGOL_API_KEY;
+    }
+    return generarToken(cfg);
+}
+
 async function buscarItemsPorTitulo(token, titulo) {
     const q = `title:"${titulo}"`;
     const url = `https://www.arcgis.com/sharing/rest/search?q=${encodeURIComponent(q)}&f=json&token=${token}&num=50`;
@@ -149,6 +156,7 @@ async function descargarAdjunto(urlCapa, token, objectId, attachmentId, nombreAr
 
 module.exports = {
     generarToken,
+    obtenerToken,
     buscarItemsPorTitulo,
     obtenerItem,
     resolverCapa,

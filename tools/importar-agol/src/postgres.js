@@ -61,7 +61,11 @@ async function insertarFeaturesPagina(pool, schema, tabla, columnas, campoObject
 
             for (const col of columnas) {
                 placeholders.push(`$${n++}`);
-                parametros.push(props[col.nombreAgol] ?? null);
+                let valor = props[col.nombreAgol] ?? null;
+                if (valor !== null && col.tipoPg === 'timestamptz' && typeof valor === 'number') {
+                    valor = new Date(valor);
+                }
+                parametros.push(valor);
             }
 
             if (tipoGeometria) {
