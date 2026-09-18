@@ -120,6 +120,8 @@ v2.7 Edición de datos del mapa desde el visor: nuevo rol `editor`, endpoints `/
 
 v2.8 Da de alta `pk_v0` como capa editable (con reproyección automática 3857→25830 al guardar, ya que su geometría nativa no está en la proyección del mapa) y cabecera de la ficha dinámica según la capa
 
+v2.9 Visualización de adjuntos (fotos) en la ficha para usuarios con sesión iniciada: nueva ruta `/adjuntos` en el backend que sirve los archivos de `datos/adjuntos/` de forma controlada, sin abrir acceso público directo en nginx
+
 ---
 
 # Estado del proyecto

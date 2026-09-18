@@ -20,11 +20,14 @@ function mostrarInfoPK(atributos, pk, coordenadas) {
             <p><b>Sentido:</b> ${atributos.SENTIDO ?? "-"}</p>
             <p><b>Tramo:</b> ${atributos.IDCTRAMO ?? "-"}</p>
 
+            <div class="adjuntos-ficha" id="adjuntosFicha"></div>
+
             ${renderBotonesEdicion(capaEditable)}
         </div>
     `;
 
     activarBotonesEdicion("pk_v0", pk, atributos, coordenadas, capaEditable);
+    cargarYMostrarAdjuntos("pk_v0", pk, document.getElementById("adjuntosFicha"));
 
     mostrarFichaPK();
 }
@@ -106,11 +109,13 @@ function mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
     contenidoFichaPK.innerHTML = `
         <div class="ficha-pk-panel">
             ${filas}
+            <div class="adjuntos-ficha" id="adjuntosFicha"></div>
             ${renderBotonesEdicion(capaEditable)}
         </div>
     `;
 
     activarBotonesEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable);
+    cargarYMostrarAdjuntos(nombreTabla, pk, document.getElementById("adjuntosFicha"));
 
     mostrarFichaPK();
 }

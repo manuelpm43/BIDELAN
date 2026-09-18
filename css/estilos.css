@@ -108,6 +108,37 @@ body {
     font-size: 14px;
 }
 
+/* Miniaturas de adjuntos en la ficha */
+.adjuntos-ficha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.adjuntos-ficha:empty {
+    margin-top: 0;
+}
+
+.miniatura-adjunto {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #d5dbe0;
+}
+
+.enlace-adjunto {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid #d5dbe0;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #1f4e79;
+    text-decoration: none;
+}
+
 /* Botones de la ficha (editar/eliminar/guardar/cancelar) y formulario de edición */
 .acciones-ficha {
     display: flex;

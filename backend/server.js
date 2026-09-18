@@ -5,6 +5,7 @@ const cors = require('cors');
 const rutasAuth = require('./auth');
 const rutasAdmin = require('./admin');
 const rutasEdicion = require('./edicion');
+const rutasAdjuntos = require('./adjuntos');
 const asegurarAdminInicial = require('./bootstrapAdmin');
 
 const app = express();
@@ -29,6 +30,7 @@ app.get('/health', function (req, res) {
 app.use('/auth', rutasAuth);
 app.use('/admin', rutasAdmin);
 app.use('/edicion', rutasEdicion);
+app.use('/adjuntos', rutasAdjuntos);
 
 const puerto = process.env.PORT || 4000;
 
