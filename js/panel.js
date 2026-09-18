@@ -3,9 +3,14 @@ const btnCerrarFichaPK = document.getElementById("btnCerrarFichaPK");
 const contenidoFichaPK = document.getElementById("contenidoFichaPK");
 const popupFichaPK = document.querySelector(".popup-ficha-pk");
 const cabeceraFichaPK = document.querySelector(".cabecera-ficha-pk");
+const tituloCabeceraFicha = document.getElementById("tituloCabeceraFicha");
 
 
-function mostrarInfoPK(atributos) {
+function mostrarInfoPK(atributos, pk, coordenadas) {
+
+    const capaEditable = window.capasEditablesActivas && window.capasEditablesActivas.pk_v0;
+
+    tituloCabeceraFicha.textContent = "Puntos Kilométricos";
 
     contenidoFichaPK.innerHTML = `
         <div class="ficha-pk-panel">
@@ -14,10 +19,56 @@ function mostrarInfoPK(atributos) {
             <p><b>PK:</b> ${atributos.PK ?? "-"}</p>
             <p><b>Sentido:</b> ${atributos.SENTIDO ?? "-"}</p>
             <p><b>Tramo:</b> ${atributos.IDCTRAMO ?? "-"}</p>
+
+            ${renderBotonesEdicion(capaEditable)}
         </div>
     `;
 
+    activarBotonesEdicion("pk_v0", pk, atributos, coordenadas, capaEditable);
+
     mostrarFichaPK();
+}
+
+
+/**
+ * HTML de los botones Editar/Eliminar, o cadena vacía si la capa no es
+ * editable (o no hay permisos). Compartido entre mostrarInfoPK (pk_v0,
+ * con plantilla propia) y mostrarFichaGenerica (cualquier otra capa).
+ */
+function renderBotonesEdicion(capaEditable) {
+
+    if (!capaEditable) {
+        return "";
+    }
+
+    return `
+        <div class="acciones-ficha">
+            <button type="button" class="btn-ficha btn-editar-ficha">Editar</button>
+            <button type="button" class="btn-ficha btn-eliminar-ficha">Eliminar</button>
+        </div>
+    `;
+
+}
+
+
+/**
+ * Engancha los listeners de los botones Editar/Eliminar renderizados por
+ * renderBotonesEdicion. No hace nada si la capa no es editable.
+ */
+function activarBotonesEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable) {
+
+    if (!capaEditable) {
+        return;
+    }
+
+    contenidoFichaPK.querySelector(".btn-editar-ficha").addEventListener("click", function () {
+        mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable);
+    });
+
+    contenidoFichaPK.querySelector(".btn-eliminar-ficha").addEventListener("click", function () {
+        confirmarYEliminar(nombreTabla, pk, capaEditable);
+    });
+
 }
 
 
@@ -50,34 +101,16 @@ function mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
         })
         .join("");
 
-    let botones = "";
-
-    if (capaEditable) {
-        botones = `
-            <div class="acciones-ficha">
-                <button type="button" class="btn-ficha btn-editar-ficha">Editar</button>
-                <button type="button" class="btn-ficha btn-eliminar-ficha">Eliminar</button>
-            </div>
-        `;
-    }
+    tituloCabeceraFicha.textContent = capaEditable?.etiqueta ?? nombreTabla;
 
     contenidoFichaPK.innerHTML = `
         <div class="ficha-pk-panel">
-            <h3>${capaEditable?.etiqueta ?? nombreTabla}</h3>
             ${filas}
-            ${botones}
+            ${renderBotonesEdicion(capaEditable)}
         </div>
     `;
 
-    if (capaEditable) {
-        contenidoFichaPK.querySelector(".btn-editar-ficha").addEventListener("click", function () {
-            mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable);
-        });
-
-        contenidoFichaPK.querySelector(".btn-eliminar-ficha").addEventListener("click", function () {
-            confirmarYEliminar(nombreTabla, pk, capaEditable);
-        });
-    }
+    activarBotonesEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable);
 
     mostrarFichaPK();
 }
@@ -117,9 +150,11 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
 
     }).join("");
 
+    tituloCabeceraFicha.textContent = capaEditable.etiqueta;
+
     contenidoFichaPK.innerHTML = `
         <div class="ficha-pk-panel">
-            <h3>${pk === null ? "Nuevo: " : "Editar: "}${capaEditable.etiqueta}</h3>
+            <h3>${pk === null ? "Nuevo elemento" : "Editar elemento"}</h3>
 
             <form id="formularioEdicionFicha">
                 ${campos}
@@ -165,7 +200,18 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
     });
 
     contenidoFichaPK.querySelector(".btn-cancelar-ficha").addEventListener("click", function () {
-        mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas);
+
+        if (pk === null) {
+            ocultarFichaPK();
+            return;
+        }
+
+        if (nombreTabla === "pk_v0") {
+            mostrarInfoPK(atributos, pk, coordenadas);
+        } else {
+            mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas);
+        }
+
     });
 
     mostrarFichaPK();

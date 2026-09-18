@@ -26,6 +26,16 @@ async function buscarCapaEditable(nombreTabla) {
     return resultado.rows[0] || null;
 }
 
+// El visor siempre manda coordenadas en la proyección del mapa (3857). Si
+// la tabla destino tiene otro SRID nativo (p.ej. pk_v0 está en 25830), hay
+// que reproyectar al guardar; si coincide, ST_Transform no hace nada.
+const SRID_MAPA = 3857;
+
+function expresionGeometria(capa, indiceParametro) {
+    const base = `ST_Transform(ST_SetSRID(ST_GeomFromGeoJSON($${indiceParametro}), ${SRID_MAPA}), ${capa.srid})`;
+    return capa.tipo_geometria.startsWith('Multi') ? `ST_Multi(${base})` : base;
+}
+
 /**
  * Filtra el objeto de atributos recibido a solo los campos que la capa
  * tiene marcados como editables, en el mismo orden que campos_editables.
@@ -78,10 +88,7 @@ async function manejarCrear(req, res) {
 
         if (geometria) {
             columnas.push(capa.campo_geometria);
-            const expr = capa.tipo_geometria.startsWith('Multi')
-                ? `ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON($${n}), ${capa.srid}))`
-                : `ST_SetSRID(ST_GeomFromGeoJSON($${n}), ${capa.srid})`;
-            placeholders.push(expr);
+            placeholders.push(expresionGeometria(capa, n));
             parametros.push(JSON.stringify(geometria));
             n++;
         }
@@ -136,10 +143,7 @@ async function manejarActualizar(req, res) {
         });
 
         if (geometria) {
-            const expr = capa.tipo_geometria.startsWith('Multi')
-                ? `ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON($${n}), ${capa.srid}))`
-                : `ST_SetSRID(ST_GeomFromGeoJSON($${n}), ${capa.srid})`;
-            asignaciones.push(`"${capa.campo_geometria}" = ${expr}`);
+            asignaciones.push(`"${capa.campo_geometria}" = ${expresionGeometria(capa, n)}`);
             parametros.push(JSON.stringify(geometria));
             n++;
         }

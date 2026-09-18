@@ -118,6 +118,8 @@ v2.6 Publica `partes_accidentes` en GeoServer (workspace bidelan) y la añade al
 
 v2.7 Edición de datos del mapa desde el visor: nuevo rol `editor`, endpoints `/edicion` en el backend (crear/mover/borrar/editar atributos con auditoría), y controles de edición en la ficha para capas registradas en `capas_editables`
 
+v2.8 Da de alta `pk_v0` como capa editable (con reproyección automática 3857→25830 al guardar, ya que su geometría nativa no está en la proyección del mapa) y cabecera de la ficha dinámica según la capa
+
 ---
 
 # Estado del proyecto

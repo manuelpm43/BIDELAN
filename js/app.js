@@ -57,7 +57,7 @@ mapa.addLayers(capaPartesAccidentes);
 // Registro de capas del visor consultables/editables por WFS, usado por la
 // generalización del clic sobre el mapa y por edicion.js.
 const capasVisor = {
-    pk_v0: { capa: capaPKv0, typeName: "bidelan:pk_v0", campoPk: null },
+    pk_v0: { capa: capaPKv0, typeName: "bidelan:pk_v0", campoPk: "fid" },
     partes_accidentes: { capa: capaPartesAccidentes, typeName: "bidelan:partes_accidentes", campoPk: "objectid_agol" }
 };
 
@@ -283,7 +283,9 @@ function consultarPKv0(coordenadas, resolucion) {
                 geojson.features
             );
 
-            mostrarInfoPK(featureMasCercana.properties);
+            const pk = featureMasCercana.properties[capasVisor.pk_v0.campoPk];
+
+            mostrarInfoPK(featureMasCercana.properties, pk, featureMasCercana.geometry.coordinates);
 
         })
         .catch(function (error) {
