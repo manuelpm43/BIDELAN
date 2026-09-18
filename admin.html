@@ -46,6 +46,30 @@
 
         </div>
 
+        <div class="tarjeta-auth tarjeta-admin">
+
+            <div class="cabecera-admin">
+                <h2>Usuarios y roles</h2>
+                <button type="button" class="btn-auth btn-recargar" id="btnRecargarUsuarios">Actualizar</button>
+            </div>
+
+            <p class="mensaje-auth" id="mensajeUsuarios"></p>
+
+            <table class="tabla-pendientes" id="tablaUsuarios" hidden>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo electrónico</th>
+                        <th>Rol</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpoTablaUsuarios"></tbody>
+            </table>
+
+            <p class="texto-sin-pendientes" id="textoSinUsuarios" hidden>No hay usuarios aprobados todavía.</p>
+
+        </div>
+
     </div>
 
     <script src="js/config.js"></script>

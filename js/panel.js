@@ -21,6 +21,201 @@ function mostrarInfoPK(atributos) {
 }
 
 
+/**
+ * Ficha genérica de solo lectura para cualquier capa consultada por clic
+ * que no tenga una plantilla propia (como mostrarInfoPK la tiene para
+ * pk_v0). Si la capa está en capasEditablesActivas (rellenado por
+ * edicion.js) y el usuario tiene permisos, añade botones Editar/Eliminar.
+ *
+ * @param {string} nombreTabla - Nombre de la tabla en Postgres (p.ej. "partes_accidentes").
+ * @param {*} pk - Valor de la clave primaria de la feature.
+ * @param {object} atributos - Propiedades GeoJSON de la feature.
+ * @param {Array<number>} coordenadas - Coordenadas de la geometría, para poder reubicarla.
+ */
+function mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
+
+    const capaEditable = window.capasEditablesActivas && window.capasEditablesActivas[nombreTabla];
+
+    // Si hay metadatos de la capa (usuario con permisos de edición), se
+    // muestran solo los campos curados en campos_editables, con su
+    // etiqueta bonita. Sin permisos, no hay ese metadato disponible, así
+    // que se listan todos los atributos tal cual los devuelve el WFS.
+    const camposAMostrar = capaEditable
+        ? capaEditable.campos_editables.map(function (definicion) { return definicion.campo; })
+        : Object.keys(atributos);
+
+    const filas = camposAMostrar
+        .map(function (campo) {
+            return `<p><b>${etiquetaCampo(capaEditable, campo)}:</b> ${atributos[campo] ?? "-"}</p>`;
+        })
+        .join("");
+
+    let botones = "";
+
+    if (capaEditable) {
+        botones = `
+            <div class="acciones-ficha">
+                <button type="button" class="btn-ficha btn-editar-ficha">Editar</button>
+                <button type="button" class="btn-ficha btn-eliminar-ficha">Eliminar</button>
+            </div>
+        `;
+    }
+
+    contenidoFichaPK.innerHTML = `
+        <div class="ficha-pk-panel">
+            <h3>${capaEditable?.etiqueta ?? nombreTabla}</h3>
+            ${filas}
+            ${botones}
+        </div>
+    `;
+
+    if (capaEditable) {
+        contenidoFichaPK.querySelector(".btn-editar-ficha").addEventListener("click", function () {
+            mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable);
+        });
+
+        contenidoFichaPK.querySelector(".btn-eliminar-ficha").addEventListener("click", function () {
+            confirmarYEliminar(nombreTabla, pk, capaEditable);
+        });
+    }
+
+    mostrarFichaPK();
+}
+
+
+function etiquetaCampo(capaEditable, campo) {
+
+    const definicion = capaEditable?.campos_editables?.find(function (c) { return c.campo === campo; });
+
+    return definicion?.etiqueta ?? campo;
+
+}
+
+
+/**
+ * Formulario de creación/edición para una capa editable. Si pk es null,
+ * es un alta nueva (POST); si no, edita la existente (PUT).
+ */
+function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable) {
+
+    let coordenadasActuales = coordenadas;
+
+    const campos = capaEditable.campos_editables.map(function (definicion) {
+
+        const valor = atributos[definicion.campo] ?? "";
+        const tipoInput = definicion.tipo === "date" ? "date" : "text";
+        const valorInput = definicion.tipo === "date" && valor
+            ? String(valor).slice(0, 10)
+            : valor;
+
+        return `
+            <label class="campo-formulario-edicion">
+                ${definicion.etiqueta}
+                <input type="${tipoInput}" name="${definicion.campo}" value="${valorInput}">
+            </label>
+        `;
+
+    }).join("");
+
+    contenidoFichaPK.innerHTML = `
+        <div class="ficha-pk-panel">
+            <h3>${pk === null ? "Nuevo: " : "Editar: "}${capaEditable.etiqueta}</h3>
+
+            <form id="formularioEdicionFicha">
+                ${campos}
+
+                <button type="button" class="btn-ficha" id="btnReubicarFicha">📍 Reubicar en el mapa</button>
+
+                <div class="acciones-ficha">
+                    <button type="submit" class="btn-ficha btn-guardar-ficha">Guardar</button>
+                    <button type="button" class="btn-ficha btn-cancelar-ficha">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    const formulario = document.getElementById("formularioEdicionFicha");
+    const btnReubicar = document.getElementById("btnReubicarFicha");
+
+    btnReubicar.addEventListener("click", function () {
+        btnReubicar.textContent = "Haz clic en el mapa…";
+        activarModoColocarPunto(nombreTabla, function (nuevasCoordenadas) {
+            coordenadasActuales = nuevasCoordenadas;
+            btnReubicar.textContent = "📍 Reubicar en el mapa (actualizado)";
+        });
+    });
+
+    formulario.addEventListener("submit", function (evento) {
+
+        evento.preventDefault();
+
+        const datosFormulario = new FormData(formulario);
+        const atributosNuevos = {};
+
+        capaEditable.campos_editables.forEach(function (definicion) {
+            atributosNuevos[definicion.campo] = datosFormulario.get(definicion.campo) || null;
+        });
+
+        const geometria = coordenadasActuales
+            ? { type: "Point", coordinates: coordenadasActuales }
+            : undefined;
+
+        guardarFicha(nombreTabla, pk, atributosNuevos, geometria);
+
+    });
+
+    contenidoFichaPK.querySelector(".btn-cancelar-ficha").addEventListener("click", function () {
+        mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas);
+    });
+
+    mostrarFichaPK();
+}
+
+
+function confirmarYEliminar(nombreTabla, pk, capaEditable) {
+
+    const confirmado = window.confirm(`¿Seguro que quieres eliminar este elemento de "${capaEditable.etiqueta}"? No se puede deshacer.`);
+
+    if (!confirmado) {
+        return;
+    }
+
+    peticionEdicion(`/edicion/${nombreTabla}/${pk}`, "DELETE")
+        .then(function () {
+            ocultarFichaPK();
+            refrescarCapaPorTabla(nombreTabla);
+        })
+        .catch(function (error) {
+            window.alert(error.message);
+        });
+
+}
+
+
+function guardarFicha(nombreTabla, pk, atributos, geometria) {
+
+    const cuerpo = { atributos: atributos };
+
+    if (geometria) {
+        cuerpo.geometria = geometria;
+    }
+
+    const peticion = pk === null
+        ? peticionEdicion(`/edicion/${nombreTabla}`, "POST", cuerpo)
+        : peticionEdicion(`/edicion/${nombreTabla}/${pk}`, "PUT", cuerpo);
+
+    peticion
+        .then(function () {
+            ocultarFichaPK();
+            refrescarCapaPorTabla(nombreTabla);
+        })
+        .catch(function (error) {
+            window.alert(error.message);
+        });
+
+}
+
+
 function mostrarFichaPK() {
 
     popupFichaPK.style.left = "";

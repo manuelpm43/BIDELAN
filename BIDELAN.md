@@ -116,6 +116,8 @@ v2.5 Herramienta `tools/importar-agol` para migrar capas de ArcGIS Online (bideg
 
 v2.6 Publica `partes_accidentes` en GeoServer (workspace bidelan) y la añade al visor como capa WMS con su checkbox de visibilidad, primera capa migrada desde ArcGIS Online
 
+v2.7 Edición de datos del mapa desde el visor: nuevo rol `editor`, endpoints `/edicion` en el backend (crear/mover/borrar/editar atributos con auditoría), y controles de edición en la ficha para capas registradas en `capas_editables`
+
 ---
 
 # Estado del proyecto

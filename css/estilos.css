@@ -107,6 +107,92 @@ body {
     margin: 6px 0;
     font-size: 14px;
 }
+
+/* Botones de la ficha (editar/eliminar/guardar/cancelar) y formulario de edición */
+.acciones-ficha {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.btn-ficha {
+    padding: 6px 12px;
+    border: 1px solid #1f4e79;
+    border-radius: 5px;
+    background: #ffffff;
+    color: #1f4e79;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-ficha:hover {
+    background: #edf3f7;
+}
+
+.btn-editar-ficha,
+.btn-guardar-ficha {
+    background: #1f4e79;
+    color: #ffffff;
+}
+
+.btn-editar-ficha:hover,
+.btn-guardar-ficha:hover {
+    background: #163a5c;
+}
+
+.btn-eliminar-ficha {
+    border-color: #b3261e;
+    color: #b3261e;
+}
+
+.btn-eliminar-ficha:hover {
+    background: #fbeceb;
+}
+
+.campo-formulario-edicion {
+    display: block;
+    margin: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #234f78;
+}
+
+.campo-formulario-edicion input {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 6px 8px;
+    border: 1px solid #d5dbe0;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 400;
+    box-sizing: border-box;
+}
+
+/* Botón "+ Añadir punto" bajo cada capa editable */
+.btn-anadir-punto {
+    display: block;
+    margin: 2px 5px 6px;
+    padding: 5px 10px;
+    border: 1px dashed #1f4e79;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #1f4e79;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-anadir-punto:hover {
+    background: #edf3f7;
+}
+
+.btn-anadir-punto:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
 /* =========================================================
    ÁRBOL DE CAPAS
    ========================================================= */

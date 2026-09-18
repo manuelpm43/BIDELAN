@@ -81,6 +81,14 @@
     background: #8c1e18;
 }
 
+.selector-rol {
+    padding: 5px 8px;
+    border: 1px solid #d5dbe0;
+    border-radius: 5px;
+    font-size: 13px;
+    background: #ffffff;
+}
+
 .texto-sin-pendientes {
     color: #7a858d;
     font-size: 14px;

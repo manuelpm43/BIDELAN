@@ -9,6 +9,10 @@ router.use(exigirAdmin);
 router.get('/usuarios/pendientes', manejarListarPendientes);
 router.post('/usuarios/:id/aprobar', manejarAprobar);
 router.post('/usuarios/:id/rechazar', manejarRechazar);
+router.get('/usuarios', manejarListarUsuarios);
+router.patch('/usuarios/:id/rol', manejarCambiarRol);
+
+const ROLES_VALIDOS = ['usuario', 'editor', 'admin'];
 
 async function manejarListarPendientes(req, res) {
     try {
@@ -63,6 +67,46 @@ async function manejarRechazar(req, res) {
     } catch (error) {
         console.error('Error al rechazar usuario:', error);
         res.status(500).json({ mensaje: 'No se ha podido rechazar el usuario.' });
+    }
+}
+
+async function manejarListarUsuarios(req, res) {
+    try {
+        const resultado = await pool.query(
+            'SELECT id, nombre, email, rol, aprobado, creado_en FROM usuarios WHERE aprobado = true ORDER BY nombre ASC'
+        );
+
+        res.json(resultado.rows);
+
+    } catch (error) {
+        console.error('Error al listar usuarios:', error);
+        res.status(500).json({ mensaje: 'No se ha podido obtener la lista de usuarios.' });
+    }
+}
+
+async function manejarCambiarRol(req, res) {
+    const { id } = req.params;
+    const { rol } = req.body;
+
+    if (!ROLES_VALIDOS.includes(rol)) {
+        return res.status(400).json({ mensaje: `El rol debe ser uno de: ${ROLES_VALIDOS.join(', ')}.` });
+    }
+
+    try {
+        const resultado = await pool.query(
+            'UPDATE usuarios SET rol = $1 WHERE id = $2 AND aprobado = true RETURNING id',
+            [rol, id]
+        );
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({ mensaje: 'No hay ningún usuario aprobado con ese id.' });
+        }
+
+        res.json({ mensaje: 'Rol actualizado.' });
+
+    } catch (error) {
+        console.error('Error al cambiar el rol del usuario:', error);
+        res.status(500).json({ mensaje: 'No se ha podido cambiar el rol.' });
     }
 }
 

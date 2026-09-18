@@ -4,6 +4,14 @@ const cuerpoTablaPendientes = document.getElementById('cuerpoTablaPendientes');
 const textoSinPendientes = document.getElementById('textoSinPendientes');
 const btnRecargarPendientes = document.getElementById('btnRecargarPendientes');
 
+const mensajeUsuarios = document.getElementById('mensajeUsuarios');
+const tablaUsuarios = document.getElementById('tablaUsuarios');
+const cuerpoTablaUsuarios = document.getElementById('cuerpoTablaUsuarios');
+const textoSinUsuarios = document.getElementById('textoSinUsuarios');
+const btnRecargarUsuarios = document.getElementById('btnRecargarUsuarios');
+
+const ROLES_DISPONIBLES = ['usuario', 'editor', 'admin'];
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const token = localStorage.getItem(claveTokenAuth);
@@ -14,8 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     btnRecargarPendientes.addEventListener('click', cargarPendientes);
+    btnRecargarUsuarios.addEventListener('click', cargarUsuarios);
 
     cargarPendientes();
+    cargarUsuarios();
 
 });
 
@@ -99,14 +109,108 @@ function gestionarUsuario(id, accion) {
 
 }
 
-function peticionAdmin(ruta, metodo) {
+function cargarUsuarios() {
+
+    limpiarMensajeUsuarios();
+
+    peticionAdmin('/admin/usuarios', 'GET')
+        .then(function (usuarios) {
+            pintarUsuarios(usuarios);
+        })
+        .catch(function (error) {
+            mostrarMensajeUsuarios(error.message, 'error');
+        });
+
+}
+
+function pintarUsuarios(usuarios) {
+
+    cuerpoTablaUsuarios.innerHTML = '';
+
+    if (usuarios.length === 0) {
+        tablaUsuarios.hidden = true;
+        textoSinUsuarios.hidden = false;
+        return;
+    }
+
+    tablaUsuarios.hidden = false;
+    textoSinUsuarios.hidden = true;
+
+    usuarios.forEach(function (usuario) {
+
+        const fila = document.createElement('tr');
+
+        fila.innerHTML = `
+            <td>${usuario.nombre}</td>
+            <td>${usuario.email}</td>
+            <td class="celda-rol"></td>
+        `;
+
+        const celdaRol = fila.querySelector('.celda-rol');
+
+        const selectorRol = document.createElement('select');
+        selectorRol.className = 'selector-rol';
+
+        ROLES_DISPONIBLES.forEach(function (rol) {
+            const opcion = document.createElement('option');
+            opcion.value = rol;
+            opcion.textContent = rol;
+            opcion.selected = rol === usuario.rol;
+            selectorRol.appendChild(opcion);
+        });
+
+        selectorRol.addEventListener('change', function () {
+            cambiarRolUsuario(usuario.id, selectorRol.value);
+        });
+
+        celdaRol.appendChild(selectorRol);
+
+        cuerpoTablaUsuarios.appendChild(fila);
+
+    });
+
+}
+
+function cambiarRolUsuario(id, rol) {
+
+    limpiarMensajeUsuarios();
+
+    peticionAdmin(`/admin/usuarios/${id}/rol`, 'PATCH', { rol: rol })
+        .then(function (datos) {
+            mostrarMensajeUsuarios(datos.mensaje, 'exito');
+        })
+        .catch(function (error) {
+            mostrarMensajeUsuarios(error.message, 'error');
+            cargarUsuarios();
+        });
+
+}
+
+function mostrarMensajeUsuarios(texto, tipo) {
+    mensajeUsuarios.textContent = texto;
+    mensajeUsuarios.classList.remove('error', 'exito');
+    mensajeUsuarios.classList.add(tipo);
+}
+
+function limpiarMensajeUsuarios() {
+    mensajeUsuarios.textContent = '';
+    mensajeUsuarios.classList.remove('error', 'exito');
+}
+
+function peticionAdmin(ruta, metodo, cuerpo) {
 
     const token = localStorage.getItem(claveTokenAuth);
-
-    return fetch(apiAuthUrl + ruta, {
+    const opciones = {
         method: metodo,
         headers: { 'Authorization': 'Bearer ' + token }
-    })
+    };
+
+    if (cuerpo) {
+        opciones.headers['Content-Type'] = 'application/json';
+        opciones.body = JSON.stringify(cuerpo);
+    }
+
+    return fetch(apiAuthUrl + ruta, opciones)
         .then(function (respuesta) {
 
             if (respuesta.status === 401 || respuesta.status === 403) {
