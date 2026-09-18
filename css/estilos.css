@@ -170,22 +170,33 @@ body {
     box-sizing: border-box;
 }
 
-/* Botón "+ Añadir punto" bajo cada capa editable */
+/* Botón "+" circular para añadir un punto, en línea junto a cada capa editable */
 .btn-anadir-punto {
-    display: block;
-    margin: 2px 5px 6px;
-    padding: 5px 10px;
-    border: 1px dashed #1f4e79;
-    border-radius: 4px;
+    flex: 0 0 auto;
+    margin-left: auto;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 1px solid #1f4e79;
+    border-radius: 50%;
     background: #ffffff;
     color: #1f4e79;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
 }
 
 .btn-anadir-punto:hover {
     background: #edf3f7;
+}
+
+.btn-anadir-punto.activo {
+    background: #1f4e79;
+    color: #ffffff;
 }
 
 .btn-anadir-punto:disabled {

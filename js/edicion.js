@@ -54,22 +54,31 @@ function anadirBotonColocarPunto(capa) {
     const boton = document.createElement("button");
     boton.type = "button";
     boton.className = "btn-anadir-punto";
-    boton.textContent = "+ Añadir punto";
+    boton.textContent = "+";
+    boton.title = `Añadir punto en ${capa.etiqueta}`;
+    boton.setAttribute("aria-label", `Añadir punto en ${capa.etiqueta}`);
 
-    boton.addEventListener("click", function () {
+    boton.addEventListener("click", function (evento) {
+
+        // Está dentro de un <label>: sin esto, el clic también marcaría/
+        // desmarcaría el checkbox de visibilidad de la capa.
+        evento.preventDefault();
+        evento.stopPropagation();
 
         boton.disabled = true;
-        boton.textContent = "Haz clic en el mapa…";
+        boton.classList.add("activo");
+        boton.title = "Haz clic en el mapa…";
 
         activarModoColocarPunto(capa.nombre_tabla, function (coordenadas) {
             boton.disabled = false;
-            boton.textContent = "+ Añadir punto";
+            boton.classList.remove("activo");
+            boton.title = `Añadir punto en ${capa.etiqueta}`;
             mostrarFormularioEdicion(capa.nombre_tabla, null, {}, coordenadas, capa);
         });
 
     });
 
-    fila.insertAdjacentElement("afterend", boton);
+    fila.appendChild(boton);
 
 }
 
