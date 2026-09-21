@@ -177,7 +177,20 @@ function mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
         return `<p><b>${escaparHtml(definicion.etiqueta)}:</b> ${escaparHtml(atributos[definicion.campo] ?? "-")}</p>`;
     };
 
-    const filasGeometria = camposGeometriaDeFicha(capaEditable).map(fila).join("");
+    // PK y PK_CALCULADO se muestran juntos en una sola fila: entero + calculado.
+    const filasGeometria = camposGeometriaDeFicha(capaEditable).map(function (definicion) {
+
+        if (definicion.campo === "PK_CALCULADO") {
+            return "";
+        }
+
+        if (definicion.campo === "PK") {
+            return `<p><b>PK:</b> ${escaparHtml(atributos.PK ?? "-")} + ${escaparHtml(atributos.PK_CALCULADO ?? "-")}</p>`;
+        }
+
+        return fila(definicion);
+
+    }).join("");
     const filasDatos = camposDatosDeFicha(nombreTabla, capaEditable, atributos).map(fila).join("");
 
     tituloCabeceraFicha.textContent = capaEditable?.etiqueta ?? TITULOS_SIN_METADATOS[nombreTabla] ?? nombreTabla;
@@ -226,7 +239,31 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
 
     };
 
-    const camposGeometria = camposGeometriaDeFicha(capaEditable).map(htmlCampo).join("");
+    // PK y PK_CALCULADO comparten una sola fila: [entero] + [calculado].
+    const htmlFilaPk = function () {
+
+        return `
+            <div class="campo-formulario-edicion">
+                PK
+                <div class="fila-pk">
+                    <input type="text" name="PK" value="${escaparHtml(atributos.PK ?? "")}" aria-label="PK (entero)" inputmode="numeric">
+                    <span class="signo-pk">+</span>
+                    <input type="text" name="PK_CALCULADO" value="${escaparHtml(atributos.PK_CALCULADO ?? "")}" aria-label="PK (calculado)" inputmode="numeric">
+                </div>
+            </div>
+        `;
+
+    };
+
+    const camposGeometria = camposGeometriaDeFicha(capaEditable).map(function (definicion) {
+
+        if (definicion.campo === "PK_CALCULADO") {
+            return "";
+        }
+
+        return definicion.campo === "PK" ? htmlFilaPk() : htmlCampo(definicion);
+
+    }).join("");
     const camposDatos = camposDatosDeFicha(nombreTabla, capaEditable, atributos).map(htmlCampo).join("");
 
     tituloCabeceraFicha.textContent = capaEditable.etiqueta;

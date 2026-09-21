@@ -248,6 +248,27 @@ body {
     box-sizing: border-box;
 }
 
+/* PK en una sola fila: [entero] + [calculado] */
+.fila-pk {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.fila-pk input {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    margin-top: 0;
+}
+
+.signo-pk {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f4e79;
+}
+
 /* Botón "+" circular para añadir un punto, en línea junto a cada capa editable */
 .btn-anadir-punto {
     flex: 0 0 auto;
