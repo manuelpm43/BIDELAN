@@ -244,11 +244,16 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
 
         return `
             <div class="campo-formulario-edicion">
-                PK
                 <div class="fila-pk">
-                    <input type="text" name="PK" value="${escaparHtml(atributos.PK ?? "")}" aria-label="PK (entero)" inputmode="numeric">
+                    <label class="columna-pk">
+                        PK
+                        <input type="text" name="PK" value="${escaparHtml(atributos.PK ?? "")}" inputmode="numeric">
+                    </label>
                     <span class="signo-pk">+</span>
-                    <input type="text" name="PK_CALCULADO" value="${escaparHtml(atributos.PK_CALCULADO ?? "")}" aria-label="PK (calculado)" inputmode="numeric">
+                    <label class="columna-pk">
+                        METROS
+                        <input type="text" name="PK_CALCULADO" value="${escaparHtml(atributos.PK_CALCULADO ?? "")}" inputmode="numeric">
+                    </label>
                 </div>
             </div>
         `;
