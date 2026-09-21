@@ -10,7 +10,8 @@ const tituloCabeceraFicha = document.getElementById("tituloCabeceraFicha");
 const CAMPOS_GEOMETRIA = [
     { campo: "CARRETERA", etiqueta: "Carretera" },
     { campo: "TIPO", etiqueta: "Tipo" },
-    { campo: "PK", etiqueta: "PK" },
+    { campo: "PK", etiqueta: "PK (entero)" },
+    { campo: "PK_CALCULADO", etiqueta: "PK (calculado)" },
     { campo: "SENTIDO", etiqueta: "Sentido" },
     { campo: "SITUACION", etiqueta: "Situación" }
 ];

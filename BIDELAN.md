@@ -128,6 +128,8 @@ v3.1 Añade la capa de ejes de carretera (`bidelan:tramos_calibrados_prueba`) al
 
 v3.2 Ficha con pestañas GEOMETRIA (los cinco campos fijos, comunes a todas las capas) / DATOS (el resto) / ADJUNTOS, tanto en lectura como en el formulario de edición. Los editores pueden subir fotos y PDF desde ADJUNTOS: nueva ruta `POST /adjuntos/:tabla/:pk` (cuerpo binario, máx. 15 MB, con auditoría) y tabla `pk_v0_adjuntos`
 
+v3.3 El PK se divide en dos campos: `PK` (parte entera, el hito) y `PK_CALCULADO` (metros recorridos sobre el segmento del eje, que pueden superar 1000 en tramos largos, p. ej. 2 + 1050)
+
 ---
 
 # Estado del proyecto

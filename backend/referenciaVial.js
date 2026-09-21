@@ -1,7 +1,6 @@
 const TABLA_EJES = 'tramos_calibrados_prueba';
 const SRID_MAPA = 3857;
 const DISTANCIA_MAXIMA = 50; // metros (unidades del SRID del eje, que debe ser proyectado)
-const DECIMALES_PK = 3;
 
 let infoGeometriaEjes = null;
 
@@ -118,7 +117,10 @@ async function calcularSugerenciaVial(pool, capa, x, y) {
             return {};
         }
 
-        const pkCalculado = fila.pk + fila.fraccion * (fila.longitud / 1000);
+        // PK en dos campos: hito (parte entera) y metros recorridos sobre el
+        // segmento. Los metros no se pasan al hito siguiente: un tramo de más
+        // de 1 km puede dar 2 + 1050.
+        const metros = Math.round(fila.fraccion * fila.longitud);
         const lado = calcularLado(
             { x: fila.ax, y: fila.ay },
             { x: fila.bx, y: fila.by },
@@ -128,7 +130,8 @@ async function calcularSugerenciaVial(pool, capa, x, y) {
         const calculados = {
             CARRETERA: fila.nombre,
             TIPO: fila.tipo,
-            PK: pkCalculado.toFixed(DECIMALES_PK),
+            PK: String(Math.trunc(fila.pk)),
+            PK_CALCULADO: String(metros),
             SENTIDO: parsearSentido(fila.nombre),
             SITUACION: lado
         };
