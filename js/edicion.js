@@ -73,7 +73,14 @@ function anadirBotonColocarPunto(capa) {
             boton.disabled = false;
             boton.classList.remove("activo");
             boton.title = `Añadir punto en ${capa.etiqueta}`;
-            mostrarFormularioEdicion(capa.nombre_tabla, null, {}, coordenadas, capa);
+
+            peticionEdicion(`/edicion/sugerencia/${capa.nombre_tabla}?x=${coordenadas[0]}&y=${coordenadas[1]}`, "GET")
+                .then(function (sugerencias) {
+                    mostrarFormularioEdicion(capa.nombre_tabla, null, sugerencias, coordenadas, capa);
+                })
+                .catch(function () {
+                    mostrarFormularioEdicion(capa.nombre_tabla, null, {}, coordenadas, capa);
+                });
         });
 
     });

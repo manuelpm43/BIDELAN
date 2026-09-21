@@ -122,6 +122,8 @@ v2.8 Da de alta `pk_v0` como capa editable (con reproyección automática 3857�
 
 v2.9 Visualización de adjuntos (fotos) en la ficha para usuarios con sesión iniciada: nueva ruta `/adjuntos` en el backend que sirve los archivos de `datos/adjuntos/` de forma controlada, sin abrir acceso público directo en nginx
 
+v3.0 Autorelleno de `CARRETERA`, `TIPO`, `PK`, `SENTIDO` y `SITUACION` al crear un punto: nueva ruta `/edicion/sugerencia/:tabla` que consulta el eje más cercano en `tramos_calibrados_prueba` (PostGIS) y precarga el formulario, con valores editables. Activado por capa con `capas_editables.sugerencias_viales` (`pk_v0` y `partes_accidentes`)
+
 ---
 
 # Estado del proyecto

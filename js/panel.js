@@ -17,7 +17,9 @@ function mostrarInfoPK(atributos, pk, coordenadas) {
             <h3>🛣 ${atributos.CARRETERA ?? "Sin carretera"}</h3>
 
             <p><b>PK:</b> ${atributos.PK ?? "-"}</p>
+            <p><b>Tipo:</b> ${atributos.TIPO ?? "-"}</p>
             <p><b>Sentido:</b> ${atributos.SENTIDO ?? "-"}</p>
+            <p><b>Situación:</b> ${atributos.SITUACION ?? "-"}</p>
             <p><b>Tramo:</b> ${atributos.IDCTRAMO ?? "-"}</p>
 
             <div class="adjuntos-ficha" id="adjuntosFicha"></div>

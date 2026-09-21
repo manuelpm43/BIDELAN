@@ -1,12 +1,14 @@
 const express = require('express');
 const pool = require('./db');
 const exigirEditor = require('./middlewareEditor');
+const { calcularSugerenciaVial } = require('./referenciaVial');
 
 const router = express.Router();
 
 router.use(exigirEditor);
 
 router.get('/capas', manejarListarCapas);
+router.get('/sugerencia/:tabla', manejarSugerencia);
 router.post('/:tabla', manejarCrear);
 router.put('/:tabla/:pk', manejarActualizar);
 router.delete('/:tabla/:pk', manejarEliminar);
@@ -59,6 +61,30 @@ async function manejarListarCapas(req, res) {
     } catch (error) {
         console.error('Error al listar capas editables:', error);
         res.status(500).json({ mensaje: 'No se ha podido obtener la lista de capas editables.' });
+    }
+}
+
+async function manejarSugerencia(req, res) {
+    const { tabla } = req.params;
+    const x = Number(req.query.x);
+    const y = Number(req.query.y);
+
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+        return res.status(400).json({ mensaje: 'Coordenadas no válidas.' });
+    }
+
+    try {
+        const capa = await buscarCapaEditable(tabla);
+
+        if (!capa) {
+            return res.status(404).json({ mensaje: 'Esa capa no está disponible para edición.' });
+        }
+
+        res.json(await calcularSugerenciaVial(pool, capa, x, y));
+
+    } catch (error) {
+        console.error('Error al calcular sugerencia:', error);
+        res.status(500).json({ mensaje: 'No se ha podido calcular la sugerencia.' });
     }
 }
 
