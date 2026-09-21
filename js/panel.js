@@ -169,7 +169,46 @@ function activarBotonesEdicion(nombreTabla, pk, atributos, coordenadas, capaEdit
  * @param {object} atributos - Propiedades GeoJSON de la feature.
  * @param {Array<number>} coordenadas - Coordenadas de la geometría, para poder reubicarla.
  */
-function mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
+function mostrarFichaGenerica(nombreTabla, pk, atributosWfs, coordenadas) {
+
+    completarAtributosDesdeBD(nombreTabla, pk, atributosWfs).then(function (atributos) {
+        dibujarFichaGenerica(nombreTabla, pk, atributos, coordenadas);
+    });
+
+}
+
+
+/**
+ * Los atributos del WFS solo incluyen las columnas que GeoServer conocía al
+ * publicar la capa. Se leen de nuevo de Postgres (vía backend) y se
+ * superponen; si falla, se usan los del WFS tal cual.
+ */
+function completarAtributosDesdeBD(nombreTabla, pk, atributosWfs) {
+
+    if (pk === null || pk === undefined) {
+        return Promise.resolve(atributosWfs);
+    }
+
+    return fetch(`${apiAuthUrl}/edicion/atributos/${nombreTabla}/${pk}`)
+        .then(function (respuesta) {
+
+            if (!respuesta.ok) {
+                throw new Error("No se han podido leer los atributos.");
+            }
+
+            return respuesta.json();
+        })
+        .then(function (datos) {
+            return Object.assign({}, atributosWfs, datos);
+        })
+        .catch(function () {
+            return atributosWfs;
+        });
+
+}
+
+
+function dibujarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
 
     const capaEditable = window.capasEditablesActivas && window.capasEditablesActivas[nombreTabla];
 

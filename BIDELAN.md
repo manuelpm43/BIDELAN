@@ -130,6 +130,8 @@ v3.2 Ficha con pestañas GEOMETRIA (los cinco campos fijos, comunes a todas las 
 
 v3.3 El PK se divide en dos campos: `PK` (parte entera, el hito) y `PK_CALCULADO` (metros recorridos sobre el segmento del eje, que pueden superar 1000 en tramos largos, p. ej. 2 + 1050)
 
+v3.4 La ficha lee los atributos directamente de Postgres (`GET /edicion/atributos/:tabla/:pk`, pública, solo campos_editables) en vez de depender de las columnas que GeoServer conocía al publicar la capa; el WFS queda solo para localizar el elemento
+
 ---
 
 # Estado del proyecto

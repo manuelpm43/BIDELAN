@@ -5,6 +5,13 @@ const { calcularSugerenciaVial } = require('./referenciaVial');
 
 const router = express.Router();
 
+// Lectura de los atributos de un elemento directamente desde Postgres. Es
+// pública porque son los mismos datos que ya sirve el WFS de GeoServer (solo
+// los campos de campos_editables), y va antes de exigirEditor a propósito.
+// Evita depender de que GeoServer conozca las columnas añadidas después de
+// publicar la capa.
+router.get('/atributos/:tabla/:pk', manejarAtributos);
+
 router.use(exigirEditor);
 
 router.get('/capas', manejarListarCapas);
@@ -61,6 +68,42 @@ async function manejarListarCapas(req, res) {
     } catch (error) {
         console.error('Error al listar capas editables:', error);
         res.status(500).json({ mensaje: 'No se ha podido obtener la lista de capas editables.' });
+    }
+}
+
+async function manejarAtributos(req, res) {
+    const { tabla, pk } = req.params;
+
+    try {
+        const capa = await buscarCapaEditable(tabla);
+
+        if (!capa) {
+            return res.status(404).json({ mensaje: 'Esa capa no está disponible.' });
+        }
+
+        // Las fechas salen como texto AAAA-MM-DD para evitar desfases de zona horaria.
+        const columnas = capa.campos_editables.map(function (definicion) {
+            const nombre = `"${definicion.campo.replace(/"/g, '""')}"`;
+
+            return definicion.tipo === 'date'
+                ? `to_char(${nombre}, 'YYYY-MM-DD') AS ${nombre}`
+                : nombre;
+        });
+
+        const resultado = await pool.query(
+            `SELECT ${columnas.join(', ')} FROM public."${capa.nombre_tabla}" WHERE "${capa.campo_pk}" = $1`,
+            [pk]
+        );
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({ mensaje: 'No existe ningún elemento con ese identificador.' });
+        }
+
+        res.json(resultado.rows[0]);
+
+    } catch (error) {
+        console.error('Error al leer atributos:', error);
+        res.status(500).json({ mensaje: 'No se han podido leer los atributos.' });
     }
 }
 
