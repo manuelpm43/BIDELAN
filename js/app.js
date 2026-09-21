@@ -34,6 +34,17 @@ console.log(mapa);
 // Servicio GeoServer del proyecto BIDELAN (vía proxy nginx con HTTPS)
 const geoserverWfsUrl = "https://visor.geospatiallab.xyz/geoserver/bidelan/ows";
 
+// Se añade antes que los puntos para que las líneas queden debajo de ellos.
+const capaEjes = new IDEE.layer.WMS({
+    url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
+    name: "bidelan:tramos_calibrados_prueba",
+    legend: "Ejes de carretera",
+    useCapabilities: false
+}, {
+    crossOrigin: null
+});
+mapa.addLayers(capaEjes);
+
 const capaPKv0 = new IDEE.layer.WMS({
     url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
     name: "bidelan:pk_v0",

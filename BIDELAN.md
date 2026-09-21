@@ -124,6 +124,10 @@ v2.9 Visualización de adjuntos (fotos) en la ficha para usuarios con sesión in
 
 v3.0 Autorelleno de `CARRETERA`, `TIPO`, `PK`, `SENTIDO` y `SITUACION` al crear un punto: nueva ruta `/edicion/sugerencia/:tabla` que consulta el eje más cercano en `tramos_calibrados_prueba` (PostGIS) y precarga el formulario, con valores editables. Activado por capa con `capas_editables.sugerencias_viales` (`pk_v0` y `partes_accidentes`)
 
+v3.1 Añade la capa de ejes de carretera (`bidelan:tramos_calibrados_prueba`) al visor como WMS con su casilla en Geometría, para ver dónde hacer clic al colocar un punto (solo visualización, no consultable ni editable)
+
+v3.2 Ficha con pestañas GEOMETRIA (los cinco campos fijos, comunes a todas las capas) / DATOS (el resto) / ADJUNTOS, tanto en lectura como en el formulario de edición. Los editores pueden subir fotos y PDF desde ADJUNTOS: nueva ruta `POST /adjuntos/:tabla/:pk` (cuerpo binario, máx. 15 MB, con auditoría) y tabla `pk_v0_adjuntos`
+
 ---
 
 # Estado del proyecto

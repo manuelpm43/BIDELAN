@@ -108,6 +108,53 @@ body {
     font-size: 14px;
 }
 
+/* Pestañas de la ficha (GEOMETRIA / DATOS / ADJUNTOS) */
+.pestanas-ficha {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #d5dbe0;
+}
+
+.pestana-ficha {
+    padding: 6px 12px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    background: transparent;
+    color: #5b6b78;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+}
+
+.pestana-ficha:hover {
+    color: #1f4e79;
+}
+
+.pestana-ficha.activa {
+    color: #1f4e79;
+    border-bottom-color: #1f4e79;
+}
+
+.panel-pestana {
+    display: none;
+}
+
+.panel-pestana.activo {
+    display: block;
+}
+
+.aviso-pestana {
+    color: #5b6b78;
+    font-size: 13px;
+}
+
+.btn-subir-adjunto {
+    margin-top: 10px;
+}
+
 /* Miniaturas de adjuntos en la ficha */
 .adjuntos-ficha {
     display: flex;
@@ -386,6 +433,14 @@ body {
     border: 1px solid #ffffff;
     box-shadow: 0 0 0 1px #1f4e79;
 }
+
+/* Eje de carretera */
+.simbolo-linea {
+    width: 14px;
+    height: 0;
+    border-top: 3px solid #1f4e79;
+}
+
 /* Distribución vertical del panel lateral */
 
 #sidebar {

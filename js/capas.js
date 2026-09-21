@@ -1,5 +1,6 @@
 const checkPKv0 = document.getElementById("checkPKv0");
 const checkPartesAccidentes = document.getElementById("checkPartesAccidentes");
+const checkEjes = document.getElementById("checkEjes");
 
 
 /**
@@ -40,6 +41,17 @@ checkPartesAccidentes.addEventListener("change", function () {
     cambiarVisibilidadCapa(
         capaPartesAccidentes,
         checkPartesAccidentes.checked
+    );
+
+});
+
+
+// Ejes de carretera
+checkEjes.addEventListener("change", function () {
+
+    cambiarVisibilidadCapa(
+        capaEjes,
+        checkEjes.checked
     );
 
 });

@@ -6,32 +6,112 @@ const cabeceraFichaPK = document.querySelector(".cabecera-ficha-pk");
 const tituloCabeceraFicha = document.getElementById("tituloCabeceraFicha");
 
 
+// Campos fijos que llevan todas las capas: van en la pestaña GEOMETRIA.
+const CAMPOS_GEOMETRIA = [
+    { campo: "CARRETERA", etiqueta: "Carretera" },
+    { campo: "TIPO", etiqueta: "Tipo" },
+    { campo: "PK", etiqueta: "PK" },
+    { campo: "SENTIDO", etiqueta: "Sentido" },
+    { campo: "SITUACION", etiqueta: "Situación" }
+];
+
+const NOMBRES_CAMPOS_GEOMETRIA = CAMPOS_GEOMETRIA.map(function (c) { return c.campo; });
+
+// Sin sesión de edición no hay metadatos de la capa (capasEditablesActivas):
+// pk_v0 conserva su ficha curada, con solo estos campos en DATOS.
+const CAMPOS_DATOS_PK_V0 = [{ campo: "IDCTRAMO", etiqueta: "Tramo" }];
+
+const TITULOS_SIN_METADATOS = { pk_v0: "Puntos Kilométricos" };
+
+
 function mostrarInfoPK(atributos, pk, coordenadas) {
+    mostrarFichaGenerica("pk_v0", pk, atributos, coordenadas);
+}
 
-    const capaEditable = window.capasEditablesActivas && window.capasEditablesActivas.pk_v0;
 
-    tituloCabeceraFicha.textContent = "Puntos Kilométricos";
+function escaparHtml(valor) {
 
-    contenidoFichaPK.innerHTML = `
-        <div class="ficha-pk-panel">
-            <h3>🛣 ${atributos.CARRETERA ?? "Sin carretera"}</h3>
+    return String(valor)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
 
-            <p><b>PK:</b> ${atributos.PK ?? "-"}</p>
-            <p><b>Tipo:</b> ${atributos.TIPO ?? "-"}</p>
-            <p><b>Sentido:</b> ${atributos.SENTIDO ?? "-"}</p>
-            <p><b>Situación:</b> ${atributos.SITUACION ?? "-"}</p>
-            <p><b>Tramo:</b> ${atributos.IDCTRAMO ?? "-"}</p>
+}
 
-            <div class="adjuntos-ficha" id="adjuntosFicha"></div>
 
-            ${renderBotonesEdicion(capaEditable)}
-        </div>
-    `;
+/**
+ * Campos de la pestaña GEOMETRIA. Con metadatos de la capa, solo los que la
+ * capa tiene entre sus campos editables (con su definición); sin ellos, los cinco.
+ */
+function camposGeometriaDeFicha(capaEditable) {
 
-    activarBotonesEdicion("pk_v0", pk, atributos, coordenadas, capaEditable);
-    cargarYMostrarAdjuntos("pk_v0", pk, document.getElementById("adjuntosFicha"));
+    if (!capaEditable) {
+        return CAMPOS_GEOMETRIA;
+    }
 
-    mostrarFichaPK();
+    return NOMBRES_CAMPOS_GEOMETRIA
+        .map(function (nombre) {
+            return capaEditable.campos_editables.find(function (d) { return d.campo === nombre; });
+        })
+        .filter(Boolean);
+
+}
+
+
+/** Campos de la pestaña DATOS: todo lo que no es de GEOMETRIA. */
+function camposDatosDeFicha(nombreTabla, capaEditable, atributos) {
+
+    if (capaEditable) {
+        return capaEditable.campos_editables.filter(function (d) {
+            return !NOMBRES_CAMPOS_GEOMETRIA.includes(d.campo);
+        });
+    }
+
+    if (nombreTabla === "pk_v0") {
+        return CAMPOS_DATOS_PK_V0;
+    }
+
+    return Object.keys(atributos)
+        .filter(function (campo) { return !NOMBRES_CAMPOS_GEOMETRIA.includes(campo); })
+        .map(function (campo) { return { campo: campo, etiqueta: campo }; });
+
+}
+
+
+/** HTML de la barra de pestañas y sus paneles; la primera queda activa. */
+function htmlPestanas(paneles) {
+
+    const barra = paneles.map(function (p, i) {
+        return `<button type="button" class="pestana-ficha${i === 0 ? " activa" : ""}" data-pestana="${p.id}">${p.titulo}</button>`;
+    }).join("");
+
+    const cuerpos = paneles.map(function (p, i) {
+        return `<div class="panel-pestana${i === 0 ? " activo" : ""}" data-panel="${p.id}">${p.html}</div>`;
+    }).join("");
+
+    return `<div class="pestanas-ficha">${barra}</div>${cuerpos}`;
+
+}
+
+
+function activarPestanas() {
+
+    contenidoFichaPK.querySelectorAll(".pestana-ficha").forEach(function (boton) {
+
+        boton.addEventListener("click", function () {
+
+            contenidoFichaPK.querySelectorAll(".pestana-ficha, .panel-pestana").forEach(function (elemento) {
+                elemento.classList.remove("activa", "activo");
+            });
+
+            boton.classList.add("activa");
+            contenidoFichaPK.querySelector(`.panel-pestana[data-panel="${boton.dataset.pestana}"]`).classList.add("activo");
+
+        });
+
+    });
+
 }
 
 
@@ -92,43 +172,31 @@ function mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas) {
 
     const capaEditable = window.capasEditablesActivas && window.capasEditablesActivas[nombreTabla];
 
-    // Si hay metadatos de la capa (usuario con permisos de edición), se
-    // muestran solo los campos curados en campos_editables, con su
-    // etiqueta bonita. Sin permisos, no hay ese metadato disponible, así
-    // que se listan todos los atributos tal cual los devuelve el WFS.
-    const camposAMostrar = capaEditable
-        ? capaEditable.campos_editables.map(function (definicion) { return definicion.campo; })
-        : Object.keys(atributos);
+    const fila = function (definicion) {
+        return `<p><b>${escaparHtml(definicion.etiqueta)}:</b> ${escaparHtml(atributos[definicion.campo] ?? "-")}</p>`;
+    };
 
-    const filas = camposAMostrar
-        .map(function (campo) {
-            return `<p><b>${etiquetaCampo(capaEditable, campo)}:</b> ${atributos[campo] ?? "-"}</p>`;
-        })
-        .join("");
+    const filasGeometria = camposGeometriaDeFicha(capaEditable).map(fila).join("");
+    const filasDatos = camposDatosDeFicha(nombreTabla, capaEditable, atributos).map(fila).join("");
 
-    tituloCabeceraFicha.textContent = capaEditable?.etiqueta ?? nombreTabla;
+    tituloCabeceraFicha.textContent = capaEditable?.etiqueta ?? TITULOS_SIN_METADATOS[nombreTabla] ?? nombreTabla;
 
     contenidoFichaPK.innerHTML = `
         <div class="ficha-pk-panel">
-            ${filas}
-            <div class="adjuntos-ficha" id="adjuntosFicha"></div>
+            ${htmlPestanas([
+                { id: "geometria", titulo: "GEOMETRIA", html: filasGeometria },
+                { id: "datos", titulo: "DATOS", html: filasDatos || `<p class="aviso-pestana">Sin datos.</p>` },
+                { id: "adjuntos", titulo: "ADJUNTOS", html: `<div id="adjuntosFicha"></div>` }
+            ])}
             ${renderBotonesEdicion(capaEditable)}
         </div>
     `;
 
+    activarPestanas();
     activarBotonesEdicion(nombreTabla, pk, atributos, coordenadas, capaEditable);
-    cargarYMostrarAdjuntos(nombreTabla, pk, document.getElementById("adjuntosFicha"));
+    montarPestanaAdjuntos(nombreTabla, pk, document.getElementById("adjuntosFicha"), Boolean(capaEditable));
 
     mostrarFichaPK();
-}
-
-
-function etiquetaCampo(capaEditable, campo) {
-
-    const definicion = capaEditable?.campos_editables?.find(function (c) { return c.campo === campo; });
-
-    return definicion?.etiqueta ?? campo;
-
 }
 
 
@@ -140,7 +208,7 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
 
     let coordenadasActuales = coordenadas;
 
-    const campos = capaEditable.campos_editables.map(function (definicion) {
+    const htmlCampo = function (definicion) {
 
         const valor = atributos[definicion.campo] ?? "";
         const tipoInput = definicion.tipo === "date" ? "date" : "text";
@@ -150,12 +218,15 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
 
         return `
             <label class="campo-formulario-edicion">
-                ${definicion.etiqueta}
-                <input type="${tipoInput}" name="${definicion.campo}" value="${valorInput}">
+                ${escaparHtml(definicion.etiqueta)}
+                <input type="${tipoInput}" name="${escaparHtml(definicion.campo)}" value="${escaparHtml(valorInput)}">
             </label>
         `;
 
-    }).join("");
+    };
+
+    const camposGeometria = camposGeometriaDeFicha(capaEditable).map(htmlCampo).join("");
+    const camposDatos = camposDatosDeFicha(nombreTabla, capaEditable, atributos).map(htmlCampo).join("");
 
     tituloCabeceraFicha.textContent = capaEditable.etiqueta;
 
@@ -164,9 +235,16 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
             <h3>${pk === null ? "Nuevo elemento" : "Editar elemento"}</h3>
 
             <form id="formularioEdicionFicha">
-                ${campos}
-
-                <button type="button" class="btn-ficha" id="btnReubicarFicha">📍 Reubicar en el mapa</button>
+                ${htmlPestanas([
+                    {
+                        id: "geometria",
+                        titulo: "GEOMETRIA",
+                        html: `${camposGeometria}
+                               <button type="button" class="btn-ficha" id="btnReubicarFicha">📍 Reubicar en el mapa</button>`
+                    },
+                    { id: "datos", titulo: "DATOS", html: camposDatos || `<p class="aviso-pestana">Sin datos.</p>` },
+                    { id: "adjuntos", titulo: "ADJUNTOS", html: `<div id="adjuntosFicha"></div>` }
+                ])}
 
                 <div class="acciones-ficha">
                     <button type="submit" class="btn-ficha btn-guardar-ficha">Guardar</button>
@@ -178,6 +256,9 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
 
     const formulario = document.getElementById("formularioEdicionFicha");
     const btnReubicar = document.getElementById("btnReubicarFicha");
+
+    activarPestanas();
+    montarPestanaAdjuntos(nombreTabla, pk, document.getElementById("adjuntosFicha"), true);
 
     btnReubicar.addEventListener("click", function () {
         btnReubicar.textContent = "Haz clic en el mapa…";
@@ -213,11 +294,7 @@ function mostrarFormularioEdicion(nombreTabla, pk, atributos, coordenadas, capaE
             return;
         }
 
-        if (nombreTabla === "pk_v0") {
-            mostrarInfoPK(atributos, pk, coordenadas);
-        } else {
-            mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas);
-        }
+        mostrarFichaGenerica(nombreTabla, pk, atributos, coordenadas);
 
     });
 
