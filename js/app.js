@@ -31,12 +31,20 @@ const mapa = IDEE.map({
 });
 console.log(mapa);
 
-// Servicio GeoServer del proyecto BIDELAN (vía proxy nginx con HTTPS)
-const geoserverWfsUrl = "https://visor.geospatiallab.xyz/geoserver/bidelan/ows";
+// Servicio GeoServer del proyecto BIDELAN (vía proxy nginx con HTTPS en producción).
+// En localhost (modo local del backend, ver backend/server.js MODO_LOCAL) se
+// usa la IP directa del VPS por el puerto 8080: evita depender de un dominio
+// que algunas redes corporativas (p. ej. el filtro de Panda) bloquean.
+const esModoLocalBidelan = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+const geoserverBaseUrl = esModoLocalBidelan
+    ? "http://217.71.202.62:8080/geoserver/bidelan"
+    : "https://visor.geospatiallab.xyz/geoserver/bidelan";
+
+const geoserverWfsUrl = `${geoserverBaseUrl}/ows`;
 
 // Se añade antes que los puntos para que las líneas queden debajo de ellos.
 const capaEjes = new IDEE.layer.WMS({
-    url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
+    url: `${geoserverBaseUrl}/wms`,
     name: "bidelan:tramos_calibrados_prueba",
     legend: "Ejes de carretera",
     useCapabilities: false
@@ -46,7 +54,7 @@ const capaEjes = new IDEE.layer.WMS({
 mapa.addLayers(capaEjes);
 
 const capaPKv0 = new IDEE.layer.WMS({
-    url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
+    url: `${geoserverBaseUrl}/wms`,
     name: "bidelan:pk_v0",
     legend: "Puntos kilométricos",
     useCapabilities: false
@@ -56,7 +64,7 @@ const capaPKv0 = new IDEE.layer.WMS({
 mapa.addLayers(capaPKv0);
 
 const capaPartesAccidentes = new IDEE.layer.WMS({
-    url: "https://visor.geospatiallab.xyz/geoserver/bidelan/wms",
+    url: `${geoserverBaseUrl}/wms`,
     name: "bidelan:partes_accidentes",
     legend: "Partes de accidentes",
     useCapabilities: false

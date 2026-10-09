@@ -132,6 +132,8 @@ v3.3 El PK se divide en dos campos: `PK` (parte entera, el hito) y `PK_CALCULADO
 
 v3.4 La ficha lee los atributos directamente de Postgres (`GET /edicion/atributos/:tabla/:pk`, pública, solo campos_editables) en vez de depender de las columnas que GeoServer conocía al publicar la capa; el WFS queda solo para localizar el elemento
 
+v3.5 Modo local (`MODO_LOCAL=1`): el backend puede servir también el visor en `http://localhost:4000` hablando directo con la BD real del VPS, para trabajar desde redes que bloqueen `*.geospatiallab.xyz` (p. ej. el filtro web corporativo de Panda)
+
 ---
 
 # Estado del proyecto
