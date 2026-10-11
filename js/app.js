@@ -35,7 +35,7 @@ console.log(mapa);
 // En localhost (modo local del backend, ver backend/server.js MODO_LOCAL) se
 // usa la IP directa del VPS por el puerto 8080: evita depender de un dominio
 // que algunas redes corporativas (p. ej. el filtro de Panda) bloquean.
-const esModoLocalBidelan = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+// esModoLocalBidelan ya se declara en js/config.js, cargado antes que este archivo.
 const geoserverBaseUrl = esModoLocalBidelan
     ? "http://217.71.202.62:8080/geoserver/bidelan"
     : "https://visor.geospatiallab.xyz/geoserver/bidelan";
