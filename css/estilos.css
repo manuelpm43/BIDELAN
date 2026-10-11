@@ -512,6 +512,56 @@ body {
 }
 
 /* =========================================================
+   BLOQUES PRINCIPALES PLEGABLES (ACTIVOS, CAMPAÑAS, FILTRADO, ANÁLISIS)
+   ========================================================= */
+
+.bloque-plegable > summary {
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+}
+
+.bloque-plegable > summary::-webkit-details-marker {
+    display: none;
+}
+
+.bloque-plegable > summary > h2 {
+    margin: 0;
+    padding: 8px 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    background: #1f4e79;
+    border-left: 4px solid #2589bd;
+    border-radius: 4px;
+
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.bloque-plegable > summary:hover > h2 {
+    background: #2a5d8a;
+}
+
+.flecha-bloque::before {
+    content: "▶";
+    display: inline-block;
+    font-size: 11px;
+    transition: transform 0.18s ease;
+}
+
+.bloque-plegable[open] > summary .flecha-bloque::before {
+    transform: rotate(90deg);
+}
+
+.contenido-bloque {
+    margin-top: 12px;
+}
+
+/* =========================================================
    AUTOCOMPLETADO DEL BUSCADOR
    ========================================================= */
 

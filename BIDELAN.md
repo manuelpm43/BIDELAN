@@ -136,6 +136,8 @@ v3.5 Modo local (`MODO_LOCAL=1`): el backend puede servir también el visor en `
 
 v3.6 Sustituye la capa de ejes de prueba `tramos_calibrados_prueba` (67 filas) por la definitiva `eje_ref_tramo` (431 filas, publicada en GeoServer): autorelleno vial y capa visual migrados, `SENTIDO` ahora viene directo de la columna `eje_sentido` en vez de parsearse del nombre del eje. Tabla vieja eliminada de Postgres y despublicada de GeoServer
 
+v3.7 Los cuatro bloques principales del panel (ACTIVOS, CAMPAÑAS, FILTRADO RESULTADOS, ANÁLISIS) pasan a ser desplegables y empiezan cerrados, para que junto al buscador se vean solo sus cabeceras al entrar
+
 ---
 
 # Estado del proyecto
