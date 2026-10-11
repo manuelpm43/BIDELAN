@@ -134,6 +134,8 @@ v3.4 La ficha lee los atributos directamente de Postgres (`GET /edicion/atributo
 
 v3.5 Modo local (`MODO_LOCAL=1`): el backend puede servir también el visor en `http://localhost:4000` hablando directo con la BD real del VPS, para trabajar desde redes que bloqueen `*.geospatiallab.xyz` (p. ej. el filtro web corporativo de Panda)
 
+v3.6 Sustituye la capa de ejes de prueba `tramos_calibrados_prueba` (67 filas) por la definitiva `eje_ref_tramo` (431 filas, publicada en GeoServer): autorelleno vial y capa visual migrados, `SENTIDO` ahora viene directo de la columna `eje_sentido` en vez de parsearse del nombre del eje. Tabla vieja eliminada de Postgres y despublicada de GeoServer
+
 ---
 
 # Estado del proyecto

@@ -1,35 +1,8 @@
-const TABLA_EJES = 'tramos_calibrados_prueba';
+const TABLA_EJES = 'eje_ref_tramo';
 const SRID_MAPA = 3857;
 const DISTANCIA_MAXIMA = 50; // metros (unidades del SRID del eje, que debe ser proyectado)
 
 let infoGeometriaEjes = null;
-
-/**
- * Sentido de circulación codificado en el NOMBRE del eje.
- * Tronco: AAA-C (AP636-1). Ramal: AAA-BB-C-D (AP636-12-2-S).
- * Devuelve '1' (creciente), '2' (decreciente) o null si no encaja.
- */
-function parsearSentido(nombre) {
-    if (typeof nombre !== 'string') {
-        return null;
-    }
-
-    const partes = nombre.trim().split('-');
-
-    if (partes.length < 2) {
-        return null;
-    }
-
-    const ultimo = partes[partes.length - 1];
-
-    if (/^[12]$/.test(ultimo)) {
-        return ultimo;
-    }
-
-    const penultimo = partes[partes.length - 2];
-
-    return /^[12]$/.test(penultimo) ? penultimo : null;
-}
 
 /**
  * Lado del clic respecto al segmento A->B (sentido de avance del eje).
@@ -86,16 +59,16 @@ async function calcularSugerenciaVial(pool, capa, x, y) {
                  SELECT ST_Transform(ST_SetSRID(ST_MakePoint($1, $2), ${SRID_MAPA}), ${Number(srid)}) AS g
              ),
              cercano AS (
-                 SELECT t."NOMBRE" AS nombre, t."TIPO" AS tipo, t.pk AS pk,
+                 SELECT t.eje_nomenclatura AS nombre, t.eje_tipo AS tipo, t.pk_inicio_tramo AS pk,
+                        t.eje_sentido AS sentido, t.longitud_m AS longitud,
                         ST_LineMerge(ST_Multi(t.${geom})) AS g
                    FROM public."${TABLA_EJES}" t, punto p
                   ORDER BY t.${geom} <-> p.g
                   LIMIT 1
              )
-             SELECT c.nombre, c.tipo, c.pk::float8 AS pk,
+             SELECT c.nombre, c.tipo, c.pk::float8 AS pk, c.sentido, c.longitud,
                     ST_Distance(c.g, p.g) AS distancia,
                     ST_LineLocatePoint(c.g, p.g) AS fraccion,
-                    ST_Length(c.g) AS longitud,
                     s.ax, s.ay, s.bx, s.by,
                     ST_X(p.g) AS cx, ST_Y(p.g) AS cy
                FROM cercano c
@@ -132,7 +105,7 @@ async function calcularSugerenciaVial(pool, capa, x, y) {
             TIPO: fila.tipo,
             PK: String(Math.trunc(fila.pk)),
             PK_CALCULADO: String(metros),
-            SENTIDO: parsearSentido(fila.nombre),
+            SENTIDO: fila.sentido,
             SITUACION: lado
         };
 
@@ -153,4 +126,4 @@ async function calcularSugerenciaVial(pool, capa, x, y) {
     }
 }
 
-module.exports = { calcularSugerenciaVial, parsearSentido, calcularLado };
+module.exports = { calcularSugerenciaVial, calcularLado };

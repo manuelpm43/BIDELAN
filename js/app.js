@@ -45,7 +45,7 @@ const geoserverWfsUrl = `${geoserverBaseUrl}/ows`;
 // Se añade antes que los puntos para que las líneas queden debajo de ellos.
 const capaEjes = new IDEE.layer.WMS({
     url: `${geoserverBaseUrl}/wms`,
-    name: "bidelan:tramos_calibrados_prueba",
+    name: "bidelan:eje_ref_tramo",
     legend: "Ejes de carretera",
     useCapabilities: false
 }, {
