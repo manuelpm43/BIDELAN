@@ -138,6 +138,8 @@ v3.6 Sustituye la capa de ejes de prueba `tramos_calibrados_prueba` (67 filas) p
 
 v3.7 Los cuatro bloques principales del panel (ACTIVOS, CAMPAÑAS, FILTRADO RESULTADOS, ANÁLISIS) pasan a ser desplegables y empiezan cerrados, para que junto al buscador se vean solo sus cabeceras al entrar
 
+v3.8 Simbología de `pk_v0` fiel a QGIS: nueva carpeta `estilos/` (un `.sld` por capa, exportado desde QGIS) como punto de entrega; `pk_v0.sld` subido a GeoServer como estilo `pk_v0_qgis` y puesto por defecto en la capa — colores por carretera y densidad de etiquetas según el zoom, igual que en QGIS
+
 ---
 
 # Estado del proyecto
