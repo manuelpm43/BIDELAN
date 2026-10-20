@@ -32,11 +32,13 @@ const mapa = IDEE.map({
 console.log(mapa);
 
 // Servicio GeoServer del proyecto BIDELAN (vía proxy nginx con HTTPS en producción).
-// En localhost (modo local del backend, ver backend/server.js MODO_LOCAL) se
-// usa la IP directa del VPS por el puerto 8080: evita depender de un dominio
-// que algunas redes corporativas (p. ej. el filtro de Panda) bloquean.
-// esModoLocalBidelan ya se declara en js/config.js, cargado antes que este archivo.
-const geoserverBaseUrl = esModoLocalBidelan
+// Solo en el puerto 4000 (modo local del backend, ver backend/server.js
+// MODO_LOCAL) se usa la IP directa del VPS por el puerto 8080, para evitar
+// depender de un dominio que algunas redes corporativas (p. ej. el filtro de
+// Panda) bloquean. Abrir los ficheros con Live Server (puerto 5500) u otro
+// servidor de ficheros estáticos sigue usando producción, como siempre.
+// esBackendLocalBidelan ya se declara en js/config.js, cargado antes que este archivo.
+const geoserverBaseUrl = esBackendLocalBidelan
     ? "http://217.71.202.62:8080/geoserver/bidelan"
     : "https://visor.geospatiallab.xyz/geoserver/bidelan";
 

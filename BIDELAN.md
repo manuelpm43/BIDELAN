@@ -140,6 +140,8 @@ v3.7 Los cuatro bloques principales del panel (ACTIVOS, CAMPAÑAS, FILTRADO RESU
 
 v3.8 Simbología de `pk_v0` fiel a QGIS: nueva carpeta `estilos/` (un `.sld` por capa, exportado desde QGIS) como punto de entrega; `pk_v0.sld` subido a GeoServer como estilo `pk_v0_qgis` y puesto por defecto en la capa — colores por carretera y densidad de etiquetas según el zoom, igual que en QGIS
 
+v3.9 Arregla la detección de "modo local": exigía solo `localhost`/`127.0.0.1`, así que abrir el proyecto con Live Server (puerto 5500) hacía que `js/config.js` y `js/app.js` llamasen a la API/GeoServer en ese mismo puerto, donde no hay nada escuchando. Ahora exige además el puerto 4000 (donde corre de verdad `MODO_LOCAL`); Live Server sigue llamando a producción como siempre
+
 ---
 
 # Estado del proyecto
