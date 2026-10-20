@@ -22,14 +22,16 @@ The app is a single page (`index.html`) split into five conceptual blocks, per `
 
 ### JS module responsibilities (`js/`, loaded in this order in `index.html`)
 
-1. `panel.js` — defines `mostrarInfoPK()`, `mostrarFichaPK()`, `ocultarFichaPK()` and drag behavior for the PK detail popup. Loaded first because `app.js` calls `mostrarInfoPK`.
-2. `app.js` — creates the API-IDEE map (`const mapa`), configures WMTS background layers (ortofoto/cartografía/híbrido), adds the `bidelan:pk_v0` WMS layer (`const capaPKv0`), auto-fits the map extent to the WFS data on load, and handles map click → WFS nearest-feature query → shows the popup via `mostrarInfoPK`.
+0. `config.js` — shared constants, loaded **before everything else** so later files can use them: `esBackendLocalBidelan` (true only on `localhost`/`127.0.0.1` **port 4000**, see "Local mode" under Deployment), `apiAuthUrl`, `claveTokenAuth`. Because all these files are loaded as classic scripts sharing one global scope (no module system), a `const` declared in two of them is a page-breaking `SyntaxError` — declare shared values once, here.
+1. `panel.js` — defines `mostrarInfoPK()`, `mostrarFichaPK()`, `ocultarFichaPK()` and drag behavior for the PK detail popup. Loaded early because `app.js` calls `mostrarInfoPK`.
+2. `app.js` — creates the API-IDEE map (`const mapa`), configures WMTS background layers (ortofoto/cartografía/híbrido), adds the WMS layers (ejes, `bidelan:pk_v0`, partes de accidentes), auto-fits the map extent to the WFS data on load, and handles map click → WFS nearest-feature query → shows the popup via `mostrarInfoPK`. Reads `esBackendLocalBidelan` from `config.js` to pick `geoserverBaseUrl`.
 3. `buscador.js` — loads all `bidelan:pk_v0` features via WFS once on startup into `datosPK`, then implements the sidebar search input: live filtering/suggestions and Enter-to-select, both matching against `"<CARRETERA> · PK <PK>"` (normalized, accent-insensitive).
 4. `capas.js` — wires the `#checkPKv0` checkbox to toggle the underlying OpenLayers layer visibility via `cambiarVisibilidadCapa()`.
+5. `adjuntos.js`, `edicion.js` — attachment viewing and the map-editing flow (editor/admin roles, `/edicion` and `/adjuntos` backend routes); see `BIDELAN.md`'s v2.7–v3.4 entries for how these work, not fully re-documented here yet.
 
-Key shared globals (declared with `const`/`let` at top level, relied on across files since there's no module system): `mapa`, `geoserverWfsUrl`, `capaPKv0`, `datosPK`.
+Key shared globals (declared with `const`/`let` at top level, relied on across files since there's no module system): `esBackendLocalBidelan`, `apiAuthUrl`, `claveTokenAuth` (from `config.js`), `mapa`, `geoserverWfsUrl`, `geoserverBaseUrl`, `capaPKv0`, `datosPK`.
 
-`index.html` itself has **no login gate** — it does not load `js/config.js`/`js/auth.js` and doesn't check for a token. The map viewer is open; only `login.html` and `admin.html` are separate entry points that talk to the auth backend (see below). Adding an access gate to `index.html` has been discussed but is not implemented — don't assume it exists.
+`index.html` itself has **no login gate** — it doesn't check for a token, and anyone can view the map without logging in. It *does* load `js/config.js` (before `js/app.js`/`js/panel.js`/etc. — order matters, see below) for the shared `esBackendLocalBidelan`/`apiAuthUrl` constants used by local-mode detection, but it never loads `js/auth.js`. `login.html` and `admin.html` are the separate entry points that actually talk to the auth backend. Adding an access gate to `index.html` has been discussed but is not implemented — don't assume it exists.
 
 ### Data source
 
