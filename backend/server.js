@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const rutasAuth = require('./auth');
@@ -33,29 +32,6 @@ app.use('/admin', rutasAdmin);
 app.use('/edicion', rutasEdicion);
 app.use('/adjuntos', rutasAdjuntos);
 
-// Modo local (MODO_LOCAL=1 en backend/.env): el backend sirve también el
-// frontend en http://localhost:<PORT>, para trabajar sin pasar por el
-// dominio público — útil si una red (p. ej. el filtro web corporativo de
-// Panda) bloquea *.geospatiallab.xyz. Solo carpetas/páginas públicas, nunca
-// backend/. En el servidor de producción, MODO_LOCAL debe quedar vacío.
-if (process.env.MODO_LOCAL === '1') {
-    const raiz = path.join(__dirname, '..');
-
-    ['css', 'js', 'img'].forEach(function (carpeta) {
-        app.use('/' + carpeta, express.static(path.join(raiz, carpeta)));
-    });
-
-    ['index.html', 'login.html', 'admin.html'].forEach(function (pagina) {
-        app.get('/' + pagina, function (req, res) {
-            res.sendFile(path.join(raiz, pagina));
-        });
-    });
-
-    app.get('/', function (req, res) {
-        res.redirect('/index.html');
-    });
-}
-
 const puerto = process.env.PORT || 4000;
 
 asegurarAdminInicial()
@@ -65,8 +41,5 @@ asegurarAdminInicial()
     .then(function () {
         app.listen(puerto, function () {
             console.log(`Backend de autenticación escuchando en el puerto ${puerto}`);
-            if (process.env.MODO_LOCAL === '1') {
-                console.log(`Modo local: abre http://localhost:${puerto}/login.html`);
-            }
         });
     });

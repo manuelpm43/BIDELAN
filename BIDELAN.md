@@ -142,6 +142,8 @@ v3.8 Simbología de `pk_v0` fiel a QGIS: nueva carpeta `estilos/` (un `.sld` por
 
 v3.9 Arregla la detección de "modo local": exigía solo `localhost`/`127.0.0.1`, así que abrir el proyecto con Live Server (puerto 5500) hacía que `js/config.js` y `js/app.js` llamasen a la API/GeoServer en ese mismo puerto, donde no hay nada escuchando. Ahora exige además el puerto 4000 (donde corre de verdad `MODO_LOCAL`); Live Server sigue llamando a producción como siempre
 
+v3.10 Elimina por completo el "modo local" (`MODO_LOCAL`, detección de `localhost`/puerto 4000 en `config.js`/`app.js`, servido del frontend desde el propio backend): ha sido fuente de bugs repetidos y el visor pasa a apuntar siempre a producción, sin ramas condicionales. De paso, arreglado el fallo real del día: el symlink de `visor` había desaparecido de `/etc/nginx/sites-enabled/` del servidor (al trabajar en el proyecto `cortes`, ajeno a BIDELAN, en la misma máquina), dejando `/auth/login` sirviendo el sitio equivocado — restaurado, más una nota en CLAUDE.md para la próxima vez
+
 ---
 
 # Estado del proyecto
