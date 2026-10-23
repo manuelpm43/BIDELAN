@@ -144,6 +144,8 @@ v3.9 Arregla la detección de "modo local": exigía solo `localhost`/`127.0.0.1`
 
 v3.10 Elimina por completo el "modo local" (`MODO_LOCAL`, detección de `localhost`/puerto 4000 en `config.js`/`app.js`, servido del frontend desde el propio backend): ha sido fuente de bugs repetidos y el visor pasa a apuntar siempre a producción, sin ramas condicionales. De paso, arreglado el fallo real del día: el symlink de `visor` había desaparecido de `/etc/nginx/sites-enabled/` del servidor (al trabajar en el proyecto `cortes`, ajeno a BIDELAN, en la misma máquina), dejando `/auth/login` sirviendo el sitio equivocado — restaurado, más una nota en CLAUDE.md para la próxima vez
 
+v3.11 Limpieza de infraestructura (22 oct): eliminados `campo.geospatiallab.xyz` y `geoserver.geospatiallab.xyz`/`montija-geoserver.duckdns.org` (en desuso); `cortes.geospatiallab.xyz` recuperado y arreglado el bucle de redirección (Cloudflare a "Completo estricto"); GeoServer ahora anuncia URLs `https://` correctas en `GetCapabilities` (Proxy Base URL en `global.xml` + `proxy_redirect` en nginx). Activar el proxy de Cloudflare en `visor.geospatiallab.xyz` empeoró el bloqueo de Panda en el trabajo (pasó de "sitios nuevos" a "anonimizadores"): se revierte a "Solo DNS" y se descarta esa vía
+
 ---
 
 # Estado del proyecto
