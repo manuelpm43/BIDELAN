@@ -148,6 +148,8 @@ v3.11 Limpieza de infraestructura (22 oct): eliminados `campo.geospatiallab.xyz`
 
 v3.12 Corrige XSS almacenado en `admin.html`: `js/admin.js` pintaba `nombre`/`email` de los usuarios directo en `innerHTML`, sin escapar — como `nombre` lo rellena cualquiera al registrarse sin autenticación, un registro malicioso podía ejecutar script con la sesión del primer admin que abriera el panel (y robar su JWT de `localStorage`). Pasado a `textContent` en las dos tablas (pendientes y usuarios), misma protección que ya tenía la ficha del mapa (`escaparHtml()` en `panel.js`)
 
+v3.13 Límite general de 120 peticiones/minuto por IP en todo el backend (`backend/server.js`), además del límite propio de `/auth`: `/edicion/atributos` (pública) y `/edicion`/`/adjuntos` (autenticadas) no tenían ningún freno. Contraseña mínima subida de 6 a 10 caracteres (backend, `js/auth.js` y `login.html`, los tres consistentes)
+
 ---
 
 # Estado del proyecto

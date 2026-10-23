@@ -39,8 +39,8 @@ async function manejarRegistro(req, res) {
         return res.status(400).json({ mensaje: 'Introduce un correo electrónico válido.' });
     }
 
-    if (password.length < 6) {
-        return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 6 caracteres.' });
+    if (password.length < 10) {
+        return res.status(400).json({ mensaje: 'La contraseña debe tener al menos 10 caracteres.' });
     }
 
     try {

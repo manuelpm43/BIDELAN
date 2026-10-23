@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const rutasAuth = require('./auth');
 const rutasAdmin = require('./admin');
 const rutasEdicion = require('./edicion');
@@ -22,6 +23,19 @@ const origenesPermitidos = (process.env.ORIGEN_PERMITIDO || '*')
 
 app.use(cors({ origin: origenesPermitidos.includes('*') ? '*' : origenesPermitidos }));
 app.use(express.json());
+
+// Límite general para toda la API (además del límite más estricto propio
+// de /auth): evita que /edicion/atributos (pública) o /edicion y /adjuntos
+// (autenticadas, pero sin límite propio) se puedan martillear sin freno.
+const limitadorGeneral = rateLimit({
+    windowMs: 60 * 1000,
+    max: 120,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { mensaje: 'Demasiadas peticiones. Inténtalo de nuevo en un momento.' }
+});
+
+app.use(limitadorGeneral);
 
 app.get('/health', function (req, res) {
     res.json({ estado: 'ok' });

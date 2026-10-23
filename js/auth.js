@@ -105,8 +105,8 @@ function registrarUsuario() {
         return;
     }
 
-    if (password.length < 6) {
-        mostrarMensajeAuth('mensajeRegistro', 'La contraseña debe tener al menos 6 caracteres.', 'error');
+    if (password.length < 10) {
+        mostrarMensajeAuth('mensajeRegistro', 'La contraseña debe tener al menos 10 caracteres.', 'error');
         return;
     }
 
