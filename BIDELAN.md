@@ -150,6 +150,8 @@ v3.12 Corrige XSS almacenado en `admin.html`: `js/admin.js` pintaba `nombre`/`em
 
 v3.13 Límite general de 120 peticiones/minuto por IP en todo el backend (`backend/server.js`), además del límite propio de `/auth`: `/edicion/atributos` (pública) y `/edicion`/`/adjuntos` (autenticadas) no tenían ningún freno. Contraseña mínima subida de 6 a 10 caracteres (backend, `js/auth.js` y `login.html`, los tres consistentes)
 
+v3.14 `index.html` exige sesión iniciada para ver el mapa: nuevo `js/sesion.js` redirige a `login.html` si no hay token guardado, antes incluso de crear el mapa (ninguna petición a GeoServer sin login). Comprobación de presencia del token en el cliente, igual que ya hacía `admin.html` — la validez real del token la sigue comprobando el backend en cada petición a `/edicion`/`/adjuntos`
+
 ---
 
 # Estado del proyecto
