@@ -60,14 +60,22 @@ function pintarPendientes(pendientes) {
 
         const fila = document.createElement('tr');
 
-        fila.innerHTML = `
-            <td>${usuario.nombre}</td>
-            <td>${usuario.email}</td>
-            <td>${new Date(usuario.creado_en).toLocaleString('es-ES')}</td>
-            <td class="celda-acciones"></td>
-        `;
+        const celdaNombre = document.createElement('td');
+        celdaNombre.textContent = usuario.nombre;
 
-        const celdaAcciones = fila.querySelector('.celda-acciones');
+        const celdaEmail = document.createElement('td');
+        celdaEmail.textContent = usuario.email;
+
+        const celdaFecha = document.createElement('td');
+        celdaFecha.textContent = new Date(usuario.creado_en).toLocaleString('es-ES');
+
+        const celdaAcciones = document.createElement('td');
+        celdaAcciones.className = 'celda-acciones';
+
+        fila.appendChild(celdaNombre);
+        fila.appendChild(celdaEmail);
+        fila.appendChild(celdaFecha);
+        fila.appendChild(celdaAcciones);
 
         const btnAprobar = document.createElement('button');
         btnAprobar.type = 'button';
@@ -140,13 +148,18 @@ function pintarUsuarios(usuarios) {
 
         const fila = document.createElement('tr');
 
-        fila.innerHTML = `
-            <td>${usuario.nombre}</td>
-            <td>${usuario.email}</td>
-            <td class="celda-rol"></td>
-        `;
+        const celdaNombre = document.createElement('td');
+        celdaNombre.textContent = usuario.nombre;
 
-        const celdaRol = fila.querySelector('.celda-rol');
+        const celdaEmail = document.createElement('td');
+        celdaEmail.textContent = usuario.email;
+
+        const celdaRol = document.createElement('td');
+        celdaRol.className = 'celda-rol';
+
+        fila.appendChild(celdaNombre);
+        fila.appendChild(celdaEmail);
+        fila.appendChild(celdaRol);
 
         const selectorRol = document.createElement('select');
         selectorRol.className = 'selector-rol';

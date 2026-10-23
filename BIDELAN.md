@@ -146,6 +146,8 @@ v3.10 Elimina por completo el "modo local" (`MODO_LOCAL`, detección de `localho
 
 v3.11 Limpieza de infraestructura (22 oct): eliminados `campo.geospatiallab.xyz` y `geoserver.geospatiallab.xyz`/`montija-geoserver.duckdns.org` (en desuso); `cortes.geospatiallab.xyz` recuperado y arreglado el bucle de redirección (Cloudflare a "Completo estricto"); GeoServer ahora anuncia URLs `https://` correctas en `GetCapabilities` (Proxy Base URL en `global.xml` + `proxy_redirect` en nginx). Activar el proxy de Cloudflare en `visor.geospatiallab.xyz` empeoró el bloqueo de Panda en el trabajo (pasó de "sitios nuevos" a "anonimizadores"): se revierte a "Solo DNS" y se descarta esa vía
 
+v3.12 Corrige XSS almacenado en `admin.html`: `js/admin.js` pintaba `nombre`/`email` de los usuarios directo en `innerHTML`, sin escapar — como `nombre` lo rellena cualquiera al registrarse sin autenticación, un registro malicioso podía ejecutar script con la sesión del primer admin que abriera el panel (y robar su JWT de `localStorage`). Pasado a `textContent` en las dos tablas (pendientes y usuarios), misma protección que ya tenía la ficha del mapa (`escaparHtml()` en `panel.js`)
+
 ---
 
 # Estado del proyecto
