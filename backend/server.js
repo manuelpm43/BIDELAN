@@ -41,6 +41,14 @@ app.get('/health', function (req, res) {
     res.json({ estado: 'ok' });
 });
 
+// La clave no es secreta de verdad (una API key de Maps JavaScript viaja
+// siempre al navegador); se sirve desde aquí solo para no dejarla escrita
+// en el repositorio. La protección real es la restricción por referente
+// HTTP configurada en la consola de Google Cloud.
+app.get('/config/google-maps-key', function (req, res) {
+    res.json({ apiKey: process.env.GOOGLE_MAPS_API_KEY || null });
+});
+
 app.use('/auth', rutasAuth);
 app.use('/admin', rutasAdmin);
 app.use('/edicion', rutasEdicion);

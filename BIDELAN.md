@@ -170,6 +170,8 @@ v3.22 La pestaña "Tabla de atributos" no se podía replegar al ver `aus_estruct
 
 v3.23 La "Tabla de atributos" tampoco se podía recoger una vez abierta, esta vez de verdad: `.contenido-tabla-atributos { display: flex }` ganaba siempre al atributo `[hidden]` que pone `js/tablaAtributos.js` (una regla de la hoja de estilos propia siempre gana a la regla por defecto del navegador para `[hidden]`, con la misma especificidad). Añadida `.contenido-tabla-atributos[hidden] { display: none }`. Sube también el número de cache-busting (`?v=3.22` → `3.23`) en los tres HTML, imprescindible para que el arreglo llegue a quien ya tenga la página cacheada (ver v3.17)
 
+v3.24 Google Street View: nuevo muñeco arrastrable (🚶, `js/streetview.js`) que se suelta sobre el mapa y abre una ventana con la vista 360° de Google en ese punto (`google.maps.StreetViewPanorama`, con aviso si no hay cobertura cerca). La clave de Maps JavaScript API vive en `backend/.env` (`GOOGLE_MAPS_API_KEY`, restringida por referente HTTP en la consola de Google Cloud) y se sirve al frontend vía `GET /config/google-maps-key` — nunca escrita en el repositorio. Las coordenadas del punto soltado se obtienen de `mapa.getMapImpl().getCoordinateFromPixel(...)` (acceso directo al OpenLayers interno de API-IDEE) y se convierten de EPSG:3857 a WGS84 a mano, sin librería adicional
+
 ---
 
 # Estado del proyecto
