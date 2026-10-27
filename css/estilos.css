@@ -794,6 +794,13 @@ body {
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* Sin esto, el "display: flex" de arriba gana siempre al atributo
+   [hidden] que pone js/tablaAtributos.js: el panel nunca llegaba a
+   desaparecer de verdad al "recogerlo". */
+.contenido-tabla-atributos[hidden] {
+    display: none;
+}
+
 .cabecera-tabla-atributos {
     display: flex;
     flex-wrap: wrap;

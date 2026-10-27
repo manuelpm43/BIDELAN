@@ -168,6 +168,8 @@ v3.21 Los adjuntos de `aus_estructuras_2026` seguían sin verse tras el fix de `
 
 v3.22 La pestaña "Tabla de atributos" no se podía replegar al ver `aus_estructuras_2026` (~90 columnas): le faltaba `min-width: 0` a los contenedores flex, así que la tabla ancha estiraba toda la página hacia los lados en vez de quedarse con su propio scroll — el botón de abrir/cerrar se iba de la vista al desplazarse, no es que dejara de funcionar. Añadido también `overflow-x: hidden` en `#app` como red de seguridad para que ninguna tabla futura, por ancha que sea, pueda desplazar la página entera
 
+v3.23 La "Tabla de atributos" tampoco se podía recoger una vez abierta, esta vez de verdad: `.contenido-tabla-atributos { display: flex }` ganaba siempre al atributo `[hidden]` que pone `js/tablaAtributos.js` (una regla de la hoja de estilos propia siempre gana a la regla por defecto del navegador para `[hidden]`, con la misma especificidad). Añadida `.contenido-tabla-atributos[hidden] { display: none }`. Sube también el número de cache-busting (`?v=3.22` → `3.23`) en los tres HTML, imprescindible para que el arreglo llegue a quien ya tenga la página cacheada (ver v3.17)
+
 ---
 
 # Estado del proyecto
