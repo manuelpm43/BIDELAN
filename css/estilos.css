@@ -645,8 +645,8 @@ body {
 
 .pegman-street-view {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 160px;
+    left: 14px;
     z-index: 1200;
 
     width: 38px;
