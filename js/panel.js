@@ -25,11 +25,13 @@ const CAMPOS_DATOS_PK_V0 = [{ campo: "IDCTRAMO", etiqueta: "Tramo" }];
 // aus_estructuras_2026 trae ~90 campos de ArcGIS Online (códigos de
 // inspección CT/ET/PL/TB/MAX...); sin metadatos de edición, se muestran
 // solo estos 4 en vez de la tabla entera.
+// Los nombres de columna reales son en minúsculas (así los crea
+// tools/importar-agol al sanear los nombres de campo de ArcGIS Online).
 const CAMPOS_DATOS_AUS_ESTRUCTURAS = [
-    { campo: "NOMBRE", etiqueta: "Nombre" },
-    { campo: "TIPOLOGIA", etiqueta: "Tipología" },
-    { campo: "OBSERVACIONES", etiqueta: "Observaciones" },
-    { campo: "AUSCULTACION_VALIDACION", etiqueta: "Validación de auscultación" }
+    { campo: "nombre", etiqueta: "Nombre" },
+    { campo: "tipologia", etiqueta: "Tipología" },
+    { campo: "observaciones", etiqueta: "Observaciones" },
+    { campo: "auscultacion_validacion", etiqueta: "Validación de auscultación" }
 ];
 
 const CAMPOS_DATOS_CURADOS_SIN_METADATOS = {

@@ -162,6 +162,8 @@ v3.18 El clic en el mapa pasa a consultar automáticamente todas las capas de `c
 
 v3.19 Los adjuntos de `aus_estructuras_2026` no se veían: `backend/adjuntos.js` solo servía adjuntos de tablas dadas de alta en `capas_editables`, y esta capa no lo está a propósito (para no sacar botones de editar con un formulario sin sentido para sus ~90 campos). `buscarCapa()` gana una segunda vía: si la tabla no está en `capas_editables`, comprueba que exista su `<tabla>_adjuntos` (nombre validado antes de tocar SQL) y usa `objectid_agol` como PK — así cualquier capa importada por `tools/importar-agol` sirve sus adjuntos sin necesidad de activar edición para ella
 
+v3.20 Los 4 campos de la ficha de `aus_estructuras_2026` salían siempre vacíos: `js/panel.js` los tenía en MAYÚSCULAS (`NOMBRE`, `TIPOLOGIA`...) pero las columnas reales en Postgres/WFS están en minúsculas (así las crea `tools/importar-agol` al sanear los nombres de ArcGIS Online) — no faltaban datos, era un problema de mayúsculas/minúsculas
+
 ---
 
 # Estado del proyecto
