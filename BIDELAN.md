@@ -154,6 +154,8 @@ v3.14 `index.html` exige sesión iniciada para ver el mapa: nuevo `js/sesion.js`
 
 v3.15 Primera capa `AUS_ESTRUCTURAS_2026` (auscultación de estructuras), muestra de 20 elementos al azar sobre 261, con sus documentos adjuntos: `tools/importar-agol` gana `--limite <n>` (elige n OBJECTID al azar en origen, sin descargar la capa entera) y publicación opcional en GeoServer vía su API REST (`src/geoserver.js`, variables `GEOSERVER_*` en `.env`). Nueva capa `bidelan:aus_estructuras_2026` (polígonos) en el grupo "Estructuras" del panel, antes un "Próximamente" — primer uso real de ese bloque
 
+v3.16 Panel "Tabla de atributos" al estilo ArcGIS Online: pestaña inferior del mapa (nuevo `js/tablaAtributos.js`) con una pestaña por cada capa de `capasVisor` (hoy `pk_v0`, `partes_accidentes`, `aus_estructuras_2026`), tabla con todos sus atributos vía WFS, botón "Zoom to" por fila (encuadra el mapa sobre esa geometría, de cualquier tipo) y "Filtrar por extensión de mapa" para acotar la tabla a lo visible
+
 ---
 
 # Estado del proyecto

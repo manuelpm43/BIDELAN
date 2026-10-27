@@ -310,6 +310,41 @@
 
         <main id="main">
             <div id="mapa" class="m-container"></div>
+
+            <!-- TABLA DE ATRIBUTOS: pestaña inferior con las capas consultables -->
+            <div class="panel-tabla-atributos" id="panelTablaAtributos">
+
+                <button type="button" class="pestana-abrir-tabla" id="btnAbrirTablaAtributos">
+                    <span class="flecha-tabla">▲</span> Tabla de atributos
+                </button>
+
+                <div class="contenido-tabla-atributos" id="contenidoTablaAtributos" hidden>
+
+                    <div class="cabecera-tabla-atributos">
+                        <div class="pestanas-capas-tabla" id="pestanasCapasTabla"></div>
+                        <div class="herramientas-tabla-atributos">
+                            <button type="button" class="btn-herramienta-tabla" id="btnFiltrarExtensionTabla">
+                                🔎 Filtrar por extensión de mapa
+                            </button>
+                            <button type="button" class="btn-herramienta-tabla" id="btnActualizarTabla">
+                                ⟳ Actualizar
+                            </button>
+                            <button type="button" class="btn-cerrar-tabla" id="btnCerrarTablaAtributos" aria-label="Cerrar tabla">&times;</button>
+                        </div>
+                    </div>
+
+                    <p class="aviso-tabla-atributos" id="avisoTablaAtributos"></p>
+
+                    <div class="cuerpo-tabla-atributos">
+                        <table id="tablaAtributosDatos">
+                            <thead id="cabeceraColumnasTabla"></thead>
+                            <tbody id="filasTablaAtributos"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
         </main>
 
     </div>
@@ -335,6 +370,7 @@
     <script src="js/sesion.js"></script>
     <script src="js/panel.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/tablaAtributos.js"></script>
     <script src="js/buscador.js"></script>
     <script src="js/capas.js"></script>
     <script src="js/adjuntos.js"></script>
