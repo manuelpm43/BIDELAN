@@ -160,6 +160,8 @@ v3.17 Cache-busting (`?v=3.16` → ahora `?v=3.17`) en todos los `<script>`/`<li
 
 v3.18 El clic en el mapa pasa a consultar automáticamente todas las capas de `capasVisor` (antes solo `pk_v0` y, a mano, `partes_accidentes` — `aus_estructuras_2026` se había quedado sin ficha al hacer clic). Ficha de `aus_estructuras_2026` curada a 4 campos (`NOMBRE`, `TIPOLOGIA`, `OBSERVACIONES`, `AUSCULTACION_VALIDACION`) en vez de volcar los ~90 campos de ArcGIS Online, mismo patrón que ya tenía `pk_v0` (`js/panel.js`)
 
+v3.19 Los adjuntos de `aus_estructuras_2026` no se veían: `backend/adjuntos.js` solo servía adjuntos de tablas dadas de alta en `capas_editables`, y esta capa no lo está a propósito (para no sacar botones de editar con un formulario sin sentido para sus ~90 campos). `buscarCapa()` gana una segunda vía: si la tabla no está en `capas_editables`, comprueba que exista su `<tabla>_adjuntos` (nombre validado antes de tocar SQL) y usa `objectid_agol` como PK — así cualquier capa importada por `tools/importar-agol` sirve sus adjuntos sin necesidad de activar edición para ella
+
 ---
 
 # Estado del proyecto

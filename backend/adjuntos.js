@@ -27,17 +27,45 @@ router.post(
 );
 
 /**
- * Reutiliza el registro de capas_editables como lista blanca de tablas
- * válidas, igual que edicion.js: nunca se interpola en SQL un nombre de
- * tabla que no haya pasado antes por aquí.
+ * Localiza la tabla y resuelve su columna de PK, sin interpolar nunca en SQL
+ * un nombre de tabla que no haya pasado antes por aquí (ni este ni el de su
+ * "_adjuntos"). Dos orígenes posibles, por este orden:
+ *
+ *  1. capas_editables — capas dadas de alta para el modo edición (pk_v0...).
+ *  2. Tablas importadas por tools/importar-agol que nunca se han dado de
+ *     alta como editables (p. ej. aus_estructuras_2026): no están en
+ *     capas_editables a propósito, para no mostrar botones de edición con
+ *     un formulario sin sentido para sus columnas, pero sí deben poder
+ *     servir los adjuntos que esa herramienta ya subió. Esas tablas siempre
+ *     usan "objectid_agol" como PK (ver tools/importar-agol/src/postgres.js).
  */
 async function buscarCapa(nombreTabla) {
+
     const resultado = await pool.query(
         'SELECT nombre_tabla, campo_pk FROM capas_editables WHERE nombre_tabla = $1 AND activa = true',
         [nombreTabla]
     );
 
-    return resultado.rows[0] || null;
+    if (resultado.rows.length > 0) {
+        return resultado.rows[0];
+    }
+
+    if (!/^[a-z][a-z0-9_]*$/.test(nombreTabla)) {
+        return null;
+    }
+
+    const existeConAdjuntos = await pool.query(
+        `SELECT 1 FROM information_schema.tables
+         WHERE table_schema = 'public' AND table_name = $1`,
+        [`${nombreTabla}_adjuntos`]
+    );
+
+    if (existeConAdjuntos.rows.length === 0) {
+        return null;
+    }
+
+    return { nombre_tabla: nombreTabla, campo_pk: 'objectid_agol' };
+
 }
 
 function limpiarNombreArchivo(nombre) {
