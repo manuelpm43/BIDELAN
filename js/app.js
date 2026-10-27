@@ -170,7 +170,14 @@ mapa.on("click", function (evento) {
     const resolucion = evento.vendor.map.getView().getResolution();
 
     consultarPKv0(coordenadas, resolucion);
-    consultarCapaGenerica("partes_accidentes", coordenadas, resolucion);
+
+    // pk_v0 tiene su propia consulta (consultarPKv0); el resto de capas
+    // registradas en capasVisor se consultan todas igual, genéricamente.
+    Object.keys(capasVisor)
+        .filter(function (nombreTabla) { return nombreTabla !== "pk_v0"; })
+        .forEach(function (nombreTabla) {
+            consultarCapaGenerica(nombreTabla, coordenadas, resolucion);
+        });
 
 });
 

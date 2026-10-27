@@ -158,6 +158,8 @@ v3.16 Panel "Tabla de atributos" al estilo ArcGIS Online: pestaña inferior del 
 
 v3.17 Cache-busting (`?v=3.16` → ahora `?v=3.17`) en todos los `<script>`/`<link>` propios de `index.html`, `login.html` y `admin.html`: `js/app.js` se quedó sirviendo una versión vieja en el navegador de un usuario durante horas (con `capasVisor` sin la capa nueva) pese a recarga forzada y ventana de incógnito — solo cambiar la URL del fichero (subiendo el número de versión) forzó a descargarlo de verdad. A partir de ahora, subir este número en cada versión nueva
 
+v3.18 El clic en el mapa pasa a consultar automáticamente todas las capas de `capasVisor` (antes solo `pk_v0` y, a mano, `partes_accidentes` — `aus_estructuras_2026` se había quedado sin ficha al hacer clic). Ficha de `aus_estructuras_2026` curada a 4 campos (`NOMBRE`, `TIPOLOGIA`, `OBSERVACIONES`, `AUSCULTACION_VALIDACION`) en vez de volcar los ~90 campos de ArcGIS Online, mismo patrón que ya tenía `pk_v0` (`js/panel.js`)
+
 ---
 
 # Estado del proyecto

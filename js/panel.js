@@ -22,7 +22,25 @@ const NOMBRES_CAMPOS_GEOMETRIA = CAMPOS_GEOMETRIA.map(function (c) { return c.ca
 // pk_v0 conserva su ficha curada, con solo estos campos en DATOS.
 const CAMPOS_DATOS_PK_V0 = [{ campo: "IDCTRAMO", etiqueta: "Tramo" }];
 
-const TITULOS_SIN_METADATOS = { pk_v0: "Puntos Kilométricos" };
+// aus_estructuras_2026 trae ~90 campos de ArcGIS Online (códigos de
+// inspección CT/ET/PL/TB/MAX...); sin metadatos de edición, se muestran
+// solo estos 4 en vez de la tabla entera.
+const CAMPOS_DATOS_AUS_ESTRUCTURAS = [
+    { campo: "NOMBRE", etiqueta: "Nombre" },
+    { campo: "TIPOLOGIA", etiqueta: "Tipología" },
+    { campo: "OBSERVACIONES", etiqueta: "Observaciones" },
+    { campo: "AUSCULTACION_VALIDACION", etiqueta: "Validación de auscultación" }
+];
+
+const CAMPOS_DATOS_CURADOS_SIN_METADATOS = {
+    pk_v0: CAMPOS_DATOS_PK_V0,
+    aus_estructuras_2026: CAMPOS_DATOS_AUS_ESTRUCTURAS
+};
+
+const TITULOS_SIN_METADATOS = {
+    pk_v0: "Puntos Kilométricos",
+    aus_estructuras_2026: "Auscultación Estructuras 2026"
+};
 
 
 function mostrarInfoPK(atributos, pk, coordenadas) {
@@ -69,8 +87,8 @@ function camposDatosDeFicha(nombreTabla, capaEditable, atributos) {
         });
     }
 
-    if (nombreTabla === "pk_v0") {
-        return CAMPOS_DATOS_PK_V0;
+    if (CAMPOS_DATOS_CURADOS_SIN_METADATOS[nombreTabla]) {
+        return CAMPOS_DATOS_CURADOS_SIN_METADATOS[nombreTabla];
     }
 
     return Object.keys(atributos)
