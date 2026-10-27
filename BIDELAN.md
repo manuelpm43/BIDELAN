@@ -156,6 +156,8 @@ v3.15 Primera capa `AUS_ESTRUCTURAS_2026` (auscultación de estructuras), muestr
 
 v3.16 Panel "Tabla de atributos" al estilo ArcGIS Online: pestaña inferior del mapa (nuevo `js/tablaAtributos.js`) con una pestaña por cada capa de `capasVisor` (hoy `pk_v0`, `partes_accidentes`, `aus_estructuras_2026`), tabla con todos sus atributos vía WFS, botón "Zoom to" por fila (encuadra el mapa sobre esa geometría, de cualquier tipo) y "Filtrar por extensión de mapa" para acotar la tabla a lo visible
 
+v3.17 Cache-busting (`?v=3.16` → ahora `?v=3.17`) en todos los `<script>`/`<link>` propios de `index.html`, `login.html` y `admin.html`: `js/app.js` se quedó sirviendo una versión vieja en el navegador de un usuario durante horas (con `capasVisor` sin la capa nueva) pese a recarga forzada y ventana de incógnito — solo cambiar la URL del fichero (subiendo el número de versión) forzó a descargarlo de verdad. A partir de ahora, subir este número en cada versión nueva
+
 ---
 
 # Estado del proyecto
