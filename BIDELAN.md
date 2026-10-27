@@ -164,6 +164,8 @@ v3.19 Los adjuntos de `aus_estructuras_2026` no se veían: `backend/adjuntos.js`
 
 v3.20 Los 4 campos de la ficha de `aus_estructuras_2026` salían siempre vacíos: `js/panel.js` los tenía en MAYÚSCULAS (`NOMBRE`, `TIPOLOGIA`...) pero las columnas reales en Postgres/WFS están en minúsculas (así las crea `tools/importar-agol` al sanear los nombres de ArcGIS Online) — no faltaban datos, era un problema de mayúsculas/minúsculas
 
+v3.21 Los adjuntos de `aus_estructuras_2026` seguían sin verse tras el fix de `backend/adjuntos.js`: las tablas las crea `tools/importar-agol` conectado como `postgres`, y el rol `bidelan_auth` (el que usa el backend) no tenía permiso sobre ellas — sin ese `GRANT`, ni siquiera aparecen en `information_schema` para ese rol, así que el backend respondía 404 como si la tabla no existiera. Concedido `GRANT SELECT` a `bidelan_auth` sobre `aus_estructuras_2026` y `aus_estructuras_2026_adjuntos`, y documentado el paso (junto con el `GRANT` ya conocido para `geoserver_ro`) en el `README.md` de la herramienta para no repetirlo a ciegas en la próxima capa
+
 ---
 
 # Estado del proyecto

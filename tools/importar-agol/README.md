@@ -78,3 +78,24 @@ Eso deja la capa visible por WMS/WFS, pero **añadirla al visor** (`js/app.js`: 
 `capasVisor`, más su casilla en `index.html`) sigue siendo un paso aparte — pídeselo a Claude Code, es
 rápido y cada capa necesita alguna decisión (símbolo, grupo del panel, título) que no tiene sentido
 automatizar a ciegas.
+
+## Permisos pendientes después de importar (a mano, una vez por capa)
+
+Este script se conecta como el rol de `PGUSER` del `.env` (normalmente el superusuario `postgres` o uno con
+privilegios amplios), así que las tablas quedan creadas **sin permisos para los roles más limitados** que
+usan los demás servicios — y ninguno de esos roles falla con un error claro: simplemente no "ven" la tabla
+en `information_schema`, como si no existiera. Dos concesiones a hacer siempre tras importar una capa nueva
+(sustituyendo `<tabla>` por el nombre real):
+
+```sql
+-- Para que GeoServer pueda servirla por WMS/WFS (datastore bidelan_nube, rol geoserver_ro):
+GRANT SELECT ON public.<tabla> TO geoserver_ro;
+
+-- Para que el backend de autenticación pueda servir sus adjuntos (rol bidelan_auth):
+GRANT SELECT ON public.<tabla> TO bidelan_auth;
+GRANT SELECT ON public.<tabla>_adjuntos TO bidelan_auth;
+```
+
+Sin la primera, la capa no aparece en GeoServer aunque esté "publicada". Sin las otras dos, la ficha del
+visor no da error pero la pestaña ADJUNTOS sale siempre vacía — `backend/adjuntos.js` devuelve 404 como si
+la tabla `_adjuntos` no existiera, cuando en realidad es que `bidelan_auth` no tiene permiso para verla.
