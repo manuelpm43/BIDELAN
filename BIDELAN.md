@@ -166,6 +166,8 @@ v3.20 Los 4 campos de la ficha de `aus_estructuras_2026` salían siempre vacíos
 
 v3.21 Los adjuntos de `aus_estructuras_2026` seguían sin verse tras el fix de `backend/adjuntos.js`: las tablas las crea `tools/importar-agol` conectado como `postgres`, y el rol `bidelan_auth` (el que usa el backend) no tenía permiso sobre ellas — sin ese `GRANT`, ni siquiera aparecen en `information_schema` para ese rol, así que el backend respondía 404 como si la tabla no existiera. Concedido `GRANT SELECT` a `bidelan_auth` sobre `aus_estructuras_2026` y `aus_estructuras_2026_adjuntos`, y documentado el paso (junto con el `GRANT` ya conocido para `geoserver_ro`) en el `README.md` de la herramienta para no repetirlo a ciegas en la próxima capa
 
+v3.22 La pestaña "Tabla de atributos" no se podía replegar al ver `aus_estructuras_2026` (~90 columnas): le faltaba `min-width: 0` a los contenedores flex, así que la tabla ancha estiraba toda la página hacia los lados en vez de quedarse con su propio scroll — el botón de abrir/cerrar se iba de la vista al desplazarse, no es que dejara de funcionar. Añadido también `overflow-x: hidden` en `#app` como red de seguridad para que ninguna tabla futura, por ancha que sea, pueda desplazar la página entera
+
 ---
 
 # Estado del proyecto
