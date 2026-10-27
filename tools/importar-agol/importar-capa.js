@@ -8,6 +8,7 @@ const agol = require('./src/agol');
 const postgres = require('./src/postgres');
 const sftpUtil = require('./src/sftp');
 const mapeoTipos = require('./src/mapeoTipos');
+const geoserver = require('./src/geoserver');
 
 function parsearArgs(argv) {
     const args = { simular: false, forzar: false };
@@ -16,14 +17,28 @@ function parsearArgs(argv) {
         if (a === '--capa') args.capa = argv[++i];
         else if (a === '--item-id') args.itemId = argv[++i];
         else if (a === '--indice') args.indice = Number(argv[++i]);
+        else if (a === '--limite') args.limite = Number(argv[++i]);
         else if (a === '--simular') args.simular = true;
         else if (a === '--forzar') args.forzar = true;
-        else throw new Error(`Argumento no reconocido: ${a}. Usa --capa "<nombre>" [--item-id <id>] [--indice <n>] [--simular] [--forzar]`);
+        else throw new Error(`Argumento no reconocido: ${a}. Usa --capa "<nombre>" [--item-id <id>] [--indice <n>] [--limite <n>] [--simular] [--forzar]`);
     }
     if (!args.capa && !args.itemId) {
         throw new Error('Debes indicar --capa "<nombre exacto en ArcGIS Online>" o --item-id <id>');
     }
+    if (args.limite !== undefined && (!Number.isInteger(args.limite) || args.limite <= 0)) {
+        throw new Error('--limite debe ser un numero entero mayor que 0');
+    }
     return args;
+}
+
+// Fisher-Yates: elige "cantidad" elementos al azar, sin repetir, de toda la lista.
+function elegirAlAzar(lista, cantidad) {
+    const copia = lista.slice();
+    for (let i = copia.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    return copia.slice(0, cantidad);
 }
 
 function columnasDesdeMetadatos(metadatos, campoObjectId) {
@@ -81,12 +96,30 @@ async function main() {
     const columnas = columnasDesdeMetadatos(metadatos, campoObjectId);
     const nombreTabla = mapeoTipos.sanitizarIdentificador(item.title);
 
+    let idsSeleccionados = null;
+    if (args.limite) {
+        console.log(`\n--limite ${args.limite}: consultando todos los OBJECTID para elegir una muestra al azar...`);
+        const todosLosIds = await agol.consultarIdsCompletos(urlCapa, token);
+        if (args.limite >= todosLosIds.length) {
+            console.log(`Aviso: --limite ${args.limite} es >= al total (${todosLosIds.length}); se importaran todas las features.`);
+            idsSeleccionados = todosLosIds;
+        } else {
+            idsSeleccionados = elegirAlAzar(todosLosIds, args.limite);
+        }
+    }
+    const totalAImportar = idsSeleccionados ? idsSeleccionados.length : totalFeatures;
+
     console.log(`Tabla destino: ${schema}.${nombreTabla}`);
-    console.log(`Geometria: ${tipoGeometria || '(sin geometria)'}   Features: ${totalFeatures}   Adjuntos: ${tieneAdjuntos ? 'si' : 'no'}`);
+    console.log(`Geometria: ${tipoGeometria || '(sin geometria)'}   Features en origen: ${totalFeatures}` +
+        (idsSeleccionados ? `   Se importaran (al azar): ${totalAImportar}` : '') +
+        `   Adjuntos: ${tieneAdjuntos ? 'si' : 'no'}`);
     console.log('Columnas:');
     columnas.forEach(c => console.log(`  ${c.nombreAgol} -> ${c.nombrePg} (${c.tipoPg})`));
 
     if (args.simular) {
+        if (idsSeleccionados) {
+            console.log(`OBJECTID elegidos: ${idsSeleccionados.join(', ')}`);
+        }
         console.log('\nModo --simular: no se ha escrito nada en Postgres ni se han descargado adjuntos.');
         return;
     }
@@ -122,17 +155,15 @@ async function main() {
         }
 
         console.log('Descargando e insertando features...');
-        const TAMANO_PAGINA = 500;
         let insertados = 0;
         let totalAdjuntos = 0;
 
-        for (let offset = 0; offset < totalFeatures; offset += TAMANO_PAGINA) {
-            const pagina = await agol.consultarFeaturesPagina(urlCapa, token, offset, TAMANO_PAGINA);
-            if (pagina.length === 0) break;
+        async function procesarPagina(pagina) {
+            if (pagina.length === 0) return;
 
             await postgres.insertarFeaturesPagina(pool, schema, nombreTabla, columnas, campoObjectId, tipoGeometria, pagina);
             insertados += pagina.length;
-            console.log(`  features ${insertados}/${totalFeatures}`);
+            console.log(`  features ${insertados}/${totalAImportar}`);
 
             if (tieneAdjuntos) {
                 for (const feature of pagina) {
@@ -159,6 +190,19 @@ async function main() {
             }
         }
 
+        if (idsSeleccionados) {
+            // Muestra al azar (--limite): una sola consulta por OBJECTID, sin paginar.
+            const pagina = await agol.consultarFeaturesPorIds(urlCapa, token, idsSeleccionados);
+            await procesarPagina(pagina);
+        } else {
+            const TAMANO_PAGINA = 500;
+            for (let offset = 0; offset < totalFeatures; offset += TAMANO_PAGINA) {
+                const pagina = await agol.consultarFeaturesPagina(urlCapa, token, offset, TAMANO_PAGINA);
+                if (pagina.length === 0) break;
+                await procesarPagina(pagina);
+            }
+        }
+
         if (sftp) {
             await sftp.end();
             sftp = null;
@@ -178,6 +222,21 @@ async function main() {
         });
 
         console.log(`\nImportacion completada: ${insertados} features, ${totalAdjuntos} adjuntos en ${schema}.${nombreTabla}`);
+
+        if (geoserver.estaConfigurado(cfg)) {
+            console.log('Publicando la capa en GeoServer...');
+            try {
+                const capaCompleta = await geoserver.publicarCapa(cfg, nombreTabla, {
+                    titulo: item.title,
+                    tieneGeometria: !!tipoGeometria
+                });
+                console.log(`Capa publicada en GeoServer: ${capaCompleta}`);
+            } catch (error) {
+                console.error(`Aviso: no se pudo publicar en GeoServer (${error.message}). Los datos ya estan en Postgres; publica la capa a mano si hace falta.`);
+            }
+        } else {
+            console.log('GEOSERVER_* no configurado en .env: la capa se queda solo en Postgres, publicala a mano en GeoServer.');
+        }
     } finally {
         if (sftp) await sftp.end();
         await pool.end();

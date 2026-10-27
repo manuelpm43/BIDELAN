@@ -131,6 +131,37 @@ async function consultarFeaturesPagina(urlCapa, token, offset, cantidad) {
     return datos.features || [];
 }
 
+// Consulta ligera: solo los IDs (sin atributos ni geometria), para poder
+// elegir una muestra al azar sin descargar la capa entera primero.
+async function consultarIdsCompletos(urlCapa, token) {
+    const params = new URLSearchParams({ where: '1=1', returnIdsOnly: 'true', f: 'json', token });
+    const respuesta = await fetch(`${urlCapa}/query?${params.toString()}`);
+    const datos = await respuesta.json();
+    if (datos.error) {
+        throw new Error(`Error consultando IDs: ${JSON.stringify(datos.error)}`);
+    }
+    return datos.objectIds || [];
+}
+
+// Trae las features de una lista concreta de OBJECTIDs (p. ej. una muestra
+// al azar), en vez de paginar por desplazamiento.
+async function consultarFeaturesPorIds(urlCapa, token, ids) {
+    if (ids.length === 0) return [];
+    const params = new URLSearchParams({
+        objectIds: ids.join(','),
+        outFields: '*',
+        f: 'geojson',
+        outSR: '102100',
+        token
+    });
+    const respuesta = await fetch(`${urlCapa}/query?${params.toString()}`);
+    const datos = await respuesta.json();
+    if (datos.error) {
+        throw new Error(`Error consultando features por ID: ${JSON.stringify(datos.error)}`);
+    }
+    return datos.features || [];
+}
+
 async function listarAdjuntos(urlCapa, token, objectId) {
     const url = `${urlCapa}/${objectId}/attachments?f=json&token=${token}`;
     const respuesta = await fetch(url);
@@ -163,6 +194,8 @@ module.exports = {
     obtenerMetadatosCapa,
     contarFeatures,
     consultarFeaturesPagina,
+    consultarIdsCompletos,
+    consultarFeaturesPorIds,
     listarAdjuntos,
     descargarAdjunto
 };

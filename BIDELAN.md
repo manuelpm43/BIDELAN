@@ -152,6 +152,8 @@ v3.13 Límite general de 120 peticiones/minuto por IP en todo el backend (`backe
 
 v3.14 `index.html` exige sesión iniciada para ver el mapa: nuevo `js/sesion.js` redirige a `login.html` si no hay token guardado, antes incluso de crear el mapa (ninguna petición a GeoServer sin login). Comprobación de presencia del token en el cliente, igual que ya hacía `admin.html` — la validez real del token la sigue comprobando el backend en cada petición a `/edicion`/`/adjuntos`
 
+v3.15 Primera capa `AUS_ESTRUCTURAS_2026` (auscultación de estructuras), muestra de 20 elementos al azar sobre 261, con sus documentos adjuntos: `tools/importar-agol` gana `--limite <n>` (elige n OBJECTID al azar en origen, sin descargar la capa entera) y publicación opcional en GeoServer vía su API REST (`src/geoserver.js`, variables `GEOSERVER_*` en `.env`). Nueva capa `bidelan:aus_estructuras_2026` (polígonos) en el grupo "Estructuras" del panel, antes un "Próximamente" — primer uso real de ese bloque
+
 ---
 
 # Estado del proyecto

@@ -67,11 +67,22 @@ const capaPartesAccidentes = new IDEE.layer.WMS({
 });
 mapa.addLayers(capaPartesAccidentes);
 
+const capaAusEstructuras = new IDEE.layer.WMS({
+    url: `${geoserverBaseUrl}/wms`,
+    name: "bidelan:aus_estructuras_2026",
+    legend: "Auscultación estructuras 2026",
+    useCapabilities: false
+}, {
+    crossOrigin: null
+});
+mapa.addLayers(capaAusEstructuras);
+
 // Registro de capas del visor consultables/editables por WFS, usado por la
 // generalización del clic sobre el mapa y por edicion.js.
 const capasVisor = {
     pk_v0: { capa: capaPKv0, typeName: "bidelan:pk_v0", campoPk: "fid" },
-    partes_accidentes: { capa: capaPartesAccidentes, typeName: "bidelan:partes_accidentes", campoPk: "objectid_agol" }
+    partes_accidentes: { capa: capaPartesAccidentes, typeName: "bidelan:partes_accidentes", campoPk: "objectid_agol" },
+    aus_estructuras_2026: { capa: capaAusEstructuras, typeName: "bidelan:aus_estructuras_2026", campoPk: "objectid_agol" }
 };
 
 /* Encuadre inicial: ajusta el zoom a la extensión real de bidelan:pk_v0 */

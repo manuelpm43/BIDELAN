@@ -21,10 +21,9 @@ Rellena `.env` con:
 - Credenciales SSH (`SSH_USUARIO` + `SSH_KEY_PATH` o `SSH_PASSWORD`) para subir los adjuntos por SFTP a
   `/opt/bidelan/datos/adjuntos/`.
 
-El puerto 5432 del servidor ya es accesible directamente (confirmado con la conexión de QGIS a
-`217.71.202.62:5432`), así que `.env.example` conecta directo sin túnel. Si en tu caso no fuera accesible,
-usa un túnel SSH (`ssh -L 5433:localhost:5432 <usuario>@217.71.202.62`) y cambia `PGHOST=localhost`,
-`PGPORT=5433` en tu `.env`.
+El puerto 5432 está restringido por IP en el firewall del servidor — si la tuya no está en la lista
+blanca, usa un túnel SSH (`ssh -L 15432:localhost:5432 <usuario>@217.71.202.62`, déjalo abierto) y cambia
+`PGHOST=localhost`, `PGPORT=15432` en tu `.env`. El servidor también exige SSL: `PGSSLMODE=require`.
 
 ## Generar la API Key en ArcGIS Online
 
@@ -49,6 +48,11 @@ Opciones:
   elementos con el mismo nombre entre los 500+ de la organización).
 - `--indice <n>` — si el Feature Service tiene varias subcapas, elige cuál importar (el script lista los índices
   disponibles si hace falta).
+- `--limite <n>` — en vez de importar la capa entera, elige **`n` features al azar** (de verdad al azar entre
+  todo el OBJECTID de origen, no las primeras `n`) y solo trae esas — adjuntos incluidos, solo de esas features.
+  Pensado para capas de gran volumen donde quieres una muestra para probar antes de decidir importarlo todo. Si
+  `n` es mayor o igual que el total de la capa, se importan todas (con aviso). Combínalo con `--simular` para ver
+  qué OBJECTID saldrían elegidos sin escribir nada todavía.
 - `--simular` — resuelve el item, infiere columnas/tipo de geometría y cuenta features/adjuntos, sin escribir
   nada en Postgres ni descargar nada. Útil para comprobar antes de importar de verdad.
 - `--forzar` — si la tabla destino ya existe, la borra y la recrea en vez de abortar.
@@ -65,5 +69,12 @@ Opciones:
 El nombre de la tabla es el título de ArcGIS Online normalizado a un identificador de Postgres válido
 (minúsculas, sin acentos, espacios/símbolos como `_`).
 
-Las tablas resultantes quedan en el mismo schema que `pk_v0`, listas para publicarse en GeoServer más adelante
-si procede — este script no publica nada en GeoServer, solo deja los datos en Postgres.
+Las tablas resultantes quedan en el mismo schema que `pk_v0`, listas para publicarse en GeoServer. Por defecto
+el script no publica nada ahí, solo deja los datos en Postgres — pero si rellenas las variables `GEOSERVER_*`
+del `.env` (ver `.env.example`), publica la capa automáticamente al terminar, vía la API REST de GeoServer
+(equivalente a "Add a new layer > Publish" en la interfaz web, con el bounding box calculado solo).
+
+Eso deja la capa visible por WMS/WFS, pero **añadirla al visor** (`js/app.js`: capa WMS + entrada en
+`capasVisor`, más su casilla en `index.html`) sigue siendo un paso aparte — pídeselo a Claude Code, es
+rápido y cada capa necesita alguna decisión (símbolo, grupo del panel, título) que no tiene sentido
+automatizar a ciegas.

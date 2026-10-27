@@ -11,6 +11,11 @@ async function conectar(cfg) {
 
     if (cfg.SSH_KEY_PATH) {
         opciones.privateKey = fs.readFileSync(cfg.SSH_KEY_PATH);
+        if (cfg.SSH_KEY_PASSPHRASE) {
+            // La passphrase solo desbloquea la clave privada en local; el
+            // servidor nunca la ve (no es una contraseña de servidor).
+            opciones.passphrase = cfg.SSH_KEY_PASSPHRASE;
+        }
     } else if (cfg.SSH_PASSWORD) {
         opciones.password = cfg.SSH_PASSWORD;
         opciones.tryKeyboard = true;

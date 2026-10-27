@@ -1,6 +1,7 @@
 const checkPKv0 = document.getElementById("checkPKv0");
 const checkPartesAccidentes = document.getElementById("checkPartesAccidentes");
 const checkEjes = document.getElementById("checkEjes");
+const checkAusEstructuras = document.getElementById("checkAusEstructuras");
 
 
 /**
@@ -52,6 +53,17 @@ checkEjes.addEventListener("change", function () {
     cambiarVisibilidadCapa(
         capaEjes,
         checkEjes.checked
+    );
+
+});
+
+
+// Auscultación estructuras 2026
+checkAusEstructuras.addEventListener("change", function () {
+
+    cambiarVisibilidadCapa(
+        capaAusEstructuras,
+        checkAusEstructuras.checked
     );
 
 });

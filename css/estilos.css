@@ -460,6 +460,15 @@ body {
     border-top: 3px solid #1f4e79;
 }
 
+/* Estructuras (polígonos) */
+.simbolo-poligono {
+    width: 10px;
+    height: 10px;
+    background: #1f4e79;
+    border: 1px solid #ffffff;
+    box-shadow: 0 0 0 1px #1f4e79;
+}
+
 /* Distribución vertical del panel lateral */
 
 #sidebar {
