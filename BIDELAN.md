@@ -172,6 +172,8 @@ v3.23 La "Tabla de atributos" tampoco se podía recoger una vez abierta, esta ve
 
 v3.24 Google Street View: nuevo muñeco arrastrable (🚶, `js/streetview.js`) que se suelta sobre el mapa y abre una ventana con la vista 360° de Google en ese punto (`google.maps.StreetViewPanorama`, con aviso si no hay cobertura cerca). La clave de Maps JavaScript API vive en `backend/.env` (`GOOGLE_MAPS_API_KEY`, restringida por referente HTTP en la consola de Google Cloud) y se sirve al frontend vía `GET /config/google-maps-key` — nunca escrita en el repositorio. Las coordenadas del punto soltado se obtienen de `mapa.getMapImpl().getCoordinateFromPixel(...)` (acceso directo al OpenLayers interno de API-IDEE) y se convierten de EPSG:3857 a WGS84 a mano, sin librería adicional
 
+v3.25 Sistema de auditoría de seguridad: 8 agentes especializados (`.claude/agents/`) + escáneres (`scripts/security/`) + skill `/custom-security-review` (`.claude/skills/`), documentado en `CLAUDE.md`. Primera auditoría completa ejecutada — ver `docs/seguridad/auditoria-2026-11-12.md` para el informe (1 hallazgo crítico: path traversal sin sanear en los adjuntos de `tools/importar-agol`; 4 altos, incluido que `backend/` no tenía `package-lock.json`, corregido aquí mismo)
+
 ---
 
 # Estado del proyecto
